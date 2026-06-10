@@ -20,6 +20,9 @@
 -->
 
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -59,12 +62,12 @@
   <button class="btn btn-o btn-red waiting-leave" onclick="leaveRoom()">Leave</button>
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:2rem">
     <span class="crown" style="font-size:2rem">♚</span>
-    <div style="font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:#7a6040;margin-bottom:.3rem">Room Code</div>
+    <div style="font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-light);margin-bottom:.3rem">Room Code</div>
     <div class="rc-big" id="wcode">——</div>
     <div class="copying" id="copy-btn" onclick="copyCode()">📋 Tap to copy &amp; share with friends</div>
     <div style="margin-top:1.5rem;width:100%;max-width:360px">
-      <div style="font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:#7a6040;margin-bottom:.6rem">
-        Players <span id="wcount">0</span>/5 &nbsp;·&nbsp; <span id="wroles" style="color:#c4922a"></span>
+      <div style="font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-light);margin-bottom:.6rem">
+        Players <span id="wcount">0</span>/5 &nbsp;·&nbsp; <span id="wroles" style="color:var(--primary)"></span>
       </div>
       <div class="slots" id="wslots"></div>
       <div class="smsg" id="wstatus">Waiting for players...</div>
@@ -84,12 +87,30 @@
 <!-- GAME -->
 <div class="screen" id="game">
   <div class="gl">
-    <div class="rcard">
-      <div class="rbig" id="g-emoji">♚</div>
-      <div style="flex:1">
-        <div class="rlabel">Your Secret Role</div>
-        <div class="rname" id="g-role">Raja</div>
-        <div class="rdesc" id="g-desc">...</div>
+    <div class="chit-container">
+      <div class="chit folded" id="role-chit" onclick="toggleChit()">
+        <!-- Folded State -->
+        <div class="chit-folded-content">
+          <div class="crease-v"></div>
+          <div class="crease-h"></div>
+          <div class="chit-scribble">?</div>
+          <div class="chit-tap-hint">tap to open...</div>
+        </div>
+        <!-- Unfolded State -->
+        <div class="chit-unfolded-content">
+          <div class="chit-close-btn" onclick="toggleChit(false); event.stopPropagation();">Fold ↩</div>
+          <div class="chit-body">
+            <div class="chit-left">
+              <div class="role-svg-container" id="my-role-svg"></div>
+              <div class="chit-pts-value" id="chit-pts">1000 PTS</div>
+            </div>
+            <div class="chit-right">
+              <div class="chit-label">Your Secret Role</div>
+              <div class="rname" id="g-role">Raja</div>
+              <div class="rdesc" id="g-desc">...</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="sbanner">
@@ -121,7 +142,7 @@
   <div class="rtitle">Round Over!</div>
   <div class="rsub" id="rresult">The court is revealed</div>
   <div class="rcards" id="rcards"></div>
-  <div style="font-size:.65rem;color:#7a6040;text-transform:uppercase;letter-spacing:2px;margin-bottom:.65rem">Leaderboard</div>
+  <div style="font-size:.75rem;color:var(--text-light);text-transform:uppercase;letter-spacing:2px;margin-bottom:.65rem;font-weight:600">Leaderboard</div>
   <div class="sb" id="lboard"></div>
   <div style="display:flex;gap:10px">
     <button class="btn" onclick="nextRound()" id="nrbtn">Next Round</button>
