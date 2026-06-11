@@ -7,12 +7,14 @@ const FIREBASE_URL = "https://raja-rani-gamez-default-rtdb.asia-southeast1.fireb
 //  The chain is always: roles[0] seeks roles[1], roles[1] seeks roles[2], etc.
 //  The LAST role in the active set is the "end" — game ends when they're found.
 // ─────────────────────────────────────────────
-const ALL_ROLES = ['Raja', 'Rani', 'Mantri', 'Police', 'Thief'/*,'Milkman','Postman','Guard'*/];
-//const ROLE_ORDER = ['Raja','Rani','Mantri','Milkman','Postman','Guard','Police','Thief'];
+const ALL_ROLES = ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Guard', 'Police', 'Thief'];
 const ROLE_DATA = {
   Raja: { emoji: '♚', pts: 1000 },
   Rani: { emoji: '♛', pts: 800 },
   Mantri: { emoji: '⚜', pts: 600 },
+  Milkman: { emoji: '🥛', pts: 500 },
+  Postman: { emoji: '✉', pts: 300 },
+  Guard: { emoji: '🛡', pts: 250 },
   Police: { emoji: '⚔', pts: 400 },
   Thief: { emoji: '🗡', pts: 200 }
 };
@@ -21,8 +23,8 @@ const ROLE_DATA = {
 // Seek chain: Raja→Rani, Rani→Mantri, ..., secondLast→Last
 // Game ends when the last role is found
 
-const AVTR = ['🎭', '🃏', '🎲', '🎯', '🎪'];
-const CLRS = ['#c4922a', '#6dbf67', '#5b8dd9', '#d9795b', '#a07cdb'];
+const AVTR = ['🎭', '🃏', '🎲', '🎯', '🎪', '🎨', '🔮', '🔱'];
+const CLRS = ['#c4922a', '#6dbf67', '#5b8dd9', '#d9795b', '#a07cdb', '#d95baf', '#2ac4b3', '#a2c42a'];
 
 function activeRoles(n) {
   const roleSets = {
@@ -30,9 +32,9 @@ function activeRoles(n) {
     3: ['Raja', 'Police', 'Thief'],
     4: ['Raja', 'Rani', 'Police', 'Thief'],
     5: ['Raja', 'Rani', 'Mantri', 'Police', 'Thief'],
-    6: ['Raja', 'Rani', 'Mantri', 'Spy', 'Police', 'Thief'],
-    7: ['Raja', 'Rani', 'Mantri', 'Spy', 'Assassin', 'Police', 'Thief'],
-    8: ['Raja', 'Rani', 'Mantri', 'Spy', 'Assassin', 'Guard', 'Police', 'Thief']
+    6: ['Raja', 'Rani', 'Mantri', 'Milkman', 'Police', 'Thief'],
+    7: ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Police', 'Thief'],
+    8: ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Guard', 'Police', 'Thief']
   };
 
   return roleSets[n] || roleSets[8];
@@ -143,7 +145,7 @@ async function joinRoom() {
     if (!data) { document.getElementById('lerr').textContent = 'Room not found!'; return; }
     if (data.phase !== 'waiting') { document.getElementById('lerr').textContent = 'Game already started.'; return; }
     const players = data.players || [];
-    if (players.length >= 5) { document.getElementById('lerr').textContent = 'Room is full (5/5).'; return; }
+    if (players.length >= 8) { document.getElementById('lerr').textContent = 'Room is full (8/8).'; return; }
     const idx = players.length;
     players.push({ id: myId, name: myName, color: CLRS[idx], avatar: AVTR[idx], score: 0 });
     const chat = data.chat || [];
@@ -278,7 +280,7 @@ function renderWaiting(data) {
   const roles = activeRoles(n);
   document.getElementById('wroles').textContent = 'Roles: ' + roles.join(', ');
   let h = '';
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 8; i++) {
     const p = players[i];
     if (p) h += `<div class="slot on"><div class="dot" style="background:${p.color}"></div><span style="font-size:.82rem">${p.name}${p.id === data.host ? ' ♚' : ''}</span></div>`;
     else h += `<div class="slot"><div class="dot"></div><span style="color:#4a3025;font-size:.78rem">Empty</span></div>`;
@@ -287,9 +289,9 @@ function renderWaiting(data) {
   const isHost = data.host === myId;
   document.getElementById('sbtn').disabled = !(isHost && n >= 2);
   document.getElementById('wstatus').textContent =
-    !isHost ? `Waiting for host to start... (${n}/5)` :
+    !isHost ? `Waiting for host to start... (${n}/8)` :
       n < 2 ? 'Need at least 2 players.' :
-        `${n}/5 players ready. You can start!`;
+        `${n}/8 players ready. You can start!`;
 }
 
 function showHowToPlay() {
