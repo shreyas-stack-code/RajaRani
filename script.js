@@ -7,22 +7,24 @@
 //  The chain is always: roles[0] seeks roles[1], roles[1] seeks roles[2], etc.
 //  The LAST role in the active set is the "end" — game ends when they're found.
 // ─────────────────────────────────────────────
-const ALL_ROLES = ['Raja','Rani','Mantri','Police','Thief'/*,'Milkman','Postman','Guard'*/];
-//const ROLE_ORDER = ['Raja','Rani','Mantri','Milkman','Postman','Guard','Police','Thief'];
+const ALL_ROLES = ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Guard', 'Police', 'Thief'];
 const ROLE_DATA = {
-  Raja:   { emoji:'♚', pts:1000 },
-  Rani:   { emoji:'♛', pts:800  },
-  Mantri: { emoji:'⚜', pts:600  },
-  Police: { emoji:'⚔', pts:400  },
-  Thief:  { emoji:'🗡', pts:200  }
+  Raja:     { emoji: '♚', pts: 1000 },
+  Rani:     { emoji: '♛', pts: 800 },
+  Mantri:   { emoji: '⚜', pts: 600 },
+  Milkman:  { emoji: '🥛', pts: 500 },
+  Postman:  { emoji: '✉', pts: 300 },
+  Guard:    { emoji: '🛡️', pts: 250 },
+  Police:   { emoji: '⚔️', pts: 400 },
+  Thief:    { emoji: '🗡️', pts: 0 }
 };
 // Points go to the SEEKER on a correct guess
 // For n players, active roles = ALL_ROLES.slice(0, n)
 // Seek chain: Raja→Rani, Rani→Mantri, ..., secondLast→Last
 // Game ends when the last role is found
 
-const AVTR = ['🎭','🃏','🎲','🎯','🎪'];
-const CLRS = ['#ebd2c8', '#ccd9e8', '#c5d3c1', '#d7cedf', '#ebdcb9'];
+const AVTR = ['🎭','🃏','🎲','🎯','🎪','🎨','🔮','🔱'];
+const CLRS = ['#ebd2c8', '#ccd9e8', '#c5d3c1', '#d7cedf', '#ebdcb9', '#e8d1e5', '#c2e2e4', '#e5e8d1'];
 
 function activeRoles(n) {
   const roleSets = {
@@ -30,9 +32,9 @@ function activeRoles(n) {
     3: ['Raja', 'Police', 'Thief'],
     4: ['Raja', 'Rani', 'Police', 'Thief'],
     5: ['Raja', 'Rani', 'Mantri', 'Police', 'Thief'],
-    6: ['Raja', 'Rani', 'Mantri', 'Spy', 'Police', 'Thief'],
-    7: ['Raja', 'Rani', 'Mantri', 'Spy', 'Assassin', 'Police', 'Thief'],
-    8: ['Raja', 'Rani', 'Mantri', 'Spy', 'Assassin', 'Guard', 'Police', 'Thief']
+    6: ['Raja', 'Rani', 'Mantri', 'Milkman', 'Police', 'Thief'],
+    7: ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Police', 'Thief'],
+    8: ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Guard', 'Police', 'Thief']
   };
 
   return roleSets[n] || roleSets[8];
@@ -170,6 +172,32 @@ function getRoleSvg(role) {
       <path d="M 30 25 L 70 25 C 70 25 75 55 50 78 C 25 55 30 25 30 25 Z" fill="url(#guardGrad)" opacity="0.85" />
       <path d="M 30 25 L 70 25 C 70 25 75 55 50 78 C 25 55 30 25 30 25 Z" stroke="#2c3e50" stroke-width="2.5" fill="none" stroke-linejoin="round" />
       <path d="M 50 32 L 50 65 M 38 45 L 62 45" stroke="#ff7675" stroke-width="2.5" stroke-linecap="round" />
+    </svg>`,
+    Milkman: `<svg viewBox="0 0 100 100" class="pencil-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="milkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#e1e2e6" />
+        </linearGradient>
+      </defs>
+      <path d="M 35 25 L 65 25 L 65 35 L 75 45 L 75 80 C 75 85 25 85 25 80 L 25 45 L 35 35 Z" fill="url(#milkGrad)" opacity="0.9" />
+      <path d="M 35 25 L 65 25 L 65 35 L 75 45 L 75 80 C 75 85 25 85 25 80 L 25 45 L 35 35 Z" stroke="#2c3e50" stroke-width="2.5" fill="none" stroke-linejoin="round" />
+      <path d="M 32 25 Q 50 22 68 25" stroke="#2c3e50" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      <path d="M 27 55 Q 50 58 73 55" stroke="#74b9ff" stroke-width="2" fill="none" stroke-dasharray="3,3" />
+      <rect x="38" y="58" width="24" height="15" rx="3" fill="#ffeaa7" stroke="#2c3e50" stroke-width="1.5" />
+      <path d="M 43 65 Q 50 63 57 65" stroke="#ff7675" stroke-width="2" fill="none" stroke-linecap="round" />
+    </svg>`,
+    Postman: `<svg viewBox="0 0 100 100" class="pencil-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="postGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffeaa7" />
+          <stop offset="100%" stop-color="#d9795b" />
+        </linearGradient>
+      </defs>
+      <rect x="20" y="30" width="60" height="40" rx="4" fill="url(#postGrad)" opacity="0.85" stroke="#2c3e50" stroke-width="2.5" stroke-linejoin="round" />
+      <path d="M 20 30 L 50 52 L 80 30" stroke="#2c3e50" stroke-width="2.5" fill="none" stroke-linejoin="round" />
+      <rect x="62" y="36" width="10" height="10" fill="#ff7675" opacity="0.9" stroke="#2c3e50" stroke-width="1.2" />
+      <path d="M 24 64 L 42 50 M 76 64 L 58 50" stroke="#2c3e50" stroke-width="2" fill="none" opacity="0.7" />
     </svg>`
   };
   return svgs[role] || '';
@@ -283,7 +311,7 @@ async function joinRoom() {
     if (!data)                   { document.getElementById('lerr').textContent = 'Room not found!'; return; }
     if (data.phase !== 'waiting'){ document.getElementById('lerr').textContent = 'Game already started.'; return; }
     const players = data.players || [];
-    if (players.length >= 5)     { document.getElementById('lerr').textContent = 'Room is full (5/5).'; return; }
+    if (players.length >= 8)     { document.getElementById('lerr').textContent = 'Room is full (8/8).'; return; }
     const idx = players.length;
     players.push({ id:myId, name:myName, color:CLRS[idx], avatar:AVTR[idx], score:0 });
     const chat = data.chat || [];
@@ -301,95 +329,85 @@ function enterWaiting() {
 async function leaveRoom() {
   stopPoll();
   try {
-    const data = await fbGet('rooms/'+myRoom);
+    const data = await fbGet('rooms/' + myRoom);
     if (data) {
-      const players = (data.players||[]).filter(p => p.id !== myId);
+      const players = (data.players || []).filter(p => p.id !== myId);
       if (players.length === 0) {
-        await fbDelete('rooms/'+myRoom);
+        await fbDelete('rooms/' + myRoom);
       } else {
         const host = data.host === myId ? players[0].id : data.host;
         const chat = data.chat || [];
-        chat.push({ sys:true, text:`${myName} left the court.` });
-        // If game was in progress and the leaver was the current seeker, pass turn to next player
-        let stage = data.stage || {};
-        if (data.phase === 'playing' && stage.seekerId === myId) {
+        chat.push({ sys: true, text: `${myName} left the court.` });
 
-    const oldChain = [...(stage.activeRoles || [])];
-
-    const leavingIndex = oldChain.indexOf(leavingRole);
-
-    const nextRole = oldChain[leavingIndex + 1];
-
-    const nextSeekerId = Object.keys(roles)
-        .find(id => roles[id] === nextRole);
-
-    if (nextSeekerId) {
-
-        stage.seekerId = nextSeekerId;
-
-        const newChain = stage.activeRoles;
-
-        const idx = newChain.indexOf(nextRole);
-
-        stage.seeking =
-            idx < newChain.length - 1
-                ? newChain[idx + 1]
-                : null;
-
-        const nextPlayer = players.find(
-            p => p.id === nextSeekerId
-        );
-
-        chat.push({
-            sys:true,
-            text:`${nextPlayer?.name || 'Next player'} continues the search.`
-        });
-    }
-}
-        // Remove their role
         // Get the role of the player leaving
-const leavingRole = data.roles?.[myId];
+        const leavingRole = data.roles?.[myId];
 
-// Remove their role assignment
-const roles = { ...(data.roles || {}) };
-delete roles[myId];
+        // Remove their role assignment
+        const roles = { ...(data.roles || {}) };
+        delete roles[myId];
 
-// Update the active role chain
-if (data.phase === 'playing' && leavingRole) {
+        let stage = data.stage || {};
+        if (data.phase === 'playing' && leavingRole) {
+          const oldChain = [...(stage.activeRoles || [])];
+          const newChain = oldChain.filter(r => r !== leavingRole);
+          stage.activeRoles = newChain;
 
-    const oldChain = [...(stage.activeRoles || [])];
+          if (stage.seekerId === myId) {
+            // The seeker is leaving. The player they were seeking becomes the new seeker.
+            const nextRole = stage.seeking;
+            const nextSeekerId = Object.keys(roles).find(id => roles[id] === nextRole);
 
-    // Remove the role from the chain
-    stage.activeRoles = oldChain.filter(r => r !== leavingRole);
+            if (nextSeekerId) {
+              stage.seekerId = nextSeekerId;
+              const idx = newChain.indexOf(nextRole);
+              stage.seeking = (idx !== -1 && idx < newChain.length - 1) ? newChain[idx + 1] : null;
 
-    // If someone was supposed to find that role,
-    // make them find the next role instead
-    if (stage.seeking === leavingRole) {
+              const nextPlayer = players.find(p => p.id === nextSeekerId);
+              chat.push({
+                sys: true,
+                text: `${nextPlayer?.name || 'Next player'} (${nextRole}) continues the search.`
+              });
+            } else {
+              stage.seeking = null;
+            }
+          } else {
+            // A non-seeking player is leaving.
+            // If the seeker was seeking the leaving player, advance the seeker's target.
+            if (stage.seeking === leavingRole) {
+              const idx = oldChain.indexOf(leavingRole);
+              stage.seeking = (idx !== -1 && idx < oldChain.length - 1) ? oldChain[idx + 1] : null;
+            }
+          }
 
-        const idx = oldChain.indexOf(leavingRole);
+          chat.push({
+            sys: true,
+            text: `${leavingRole} left the court. The chain has been updated.`
+          });
 
-        stage.seeking =
-            idx < oldChain.length - 1
-                ? oldChain[idx + 1]
-                : null;
-    }
+          // Transition to reveal if seeking is complete or no more matching matches can be made
+          if (!stage.seeking || newChain.length <= 1) {
+            data.phase = 'reveal';
+            chat.push({ sys: true, text: `🏆 Round complete! All roles have been revealed.` });
+          }
+        }
 
-    chat.push({
-        sys: true,
-        text: `${leavingRole} left the court. The chain has been updated.`
-    });
-}
+        // If not enough players are left to play, return to waiting phase
+        if (players.length < 2) {
+          data.phase = 'waiting';
+          chat.push({ sys: true, text: `Not enough players. Returning to waiting room.` });
+        }
 
-await fbPatch('rooms/'+myRoom, {
-    players,
-    host,
-    chat,
-    stage,
-    roles
-});
+        await fbPatch('rooms/' + myRoom, {
+          players,
+          host,
+          chat,
+          stage,
+          roles,
+          phase: data.phase
+        });
       }
     }
-  } catch(e) {}
+  } catch (e) { }
   myRoom = '';
   lastChatLen = 0;
   lastPhase = '';
@@ -442,18 +460,18 @@ function renderWaiting(data) {
   const roles = activeRoles(n);
   document.getElementById('wroles').textContent = 'Roles: ' + roles.join(', ');
   let h = '';
-  for (let i=0;i<5;i++) {
+  for (let i=0;i<8;i++) {
     const p = players[i];
     if (p) h += `<div class="slot on"><div class="dot" style="background:${p.color}"></div><span style="font-size:.82rem">${p.name}${p.id===data.host?' ♚':''}</span></div>`;
-    else   h += `<div class="slot"><div class="dot"></div><span style="color:#4a3025;font-size:.78rem">Empty</span></div>`;
+    else   h += `<div class="slot"><div class="dot"></div><span style="color:var(--text-light);font-size:.78rem">Empty</span></div>`;
   }
   document.getElementById('wslots').innerHTML = h;
   const isHost = data.host === myId;
   document.getElementById('sbtn').disabled = !(isHost && n >= 2);
   document.getElementById('wstatus').textContent =
-    !isHost ? `Waiting for host to start... (${n}/5)` :
+    !isHost ? `Waiting for host to start... (${n}/8)` :
     n < 2   ? 'Need at least 2 players.' :
-              `${n}/5 players ready. You can start!`;
+              `${n}/8 players ready. You can start!`;
 }
 
 function showHowToPlay() {
