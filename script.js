@@ -16,7 +16,7 @@ const ROLE_DATA = {
   Postman: { emoji: '✉', pts: 300 },
   Guard: { emoji: '🛡', pts: 250 },
   Police: { emoji: '⚔', pts: 400 },
-  Thief: { emoji: '🗡', pts: 200 }
+  Thief: { emoji: '🗡', pts: 0 }
 };
 // Points go to the SEEKER on a correct guess
 // For n players, active roles = ALL_ROLES.slice(0, n)
