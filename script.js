@@ -1,7 +1,9 @@
-  const FIREBASE_URL = "https://raja-rani-gamez-default-rtdb.asia-southeast1.firebasedatabase.app/";
+// Fallback check in case config.js is missing or not configured
+if (typeof FIREBASE_URL === 'undefined') {
+  window.FIREBASE_URL = '';
+}
 
-
-  // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
 //  ROLE DEFINITIONS
 //  Roles are assigned in order based on player count.
 //  The chain is always: roles[0] seeks roles[1], roles[1] seeks roles[2], etc.
