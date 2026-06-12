@@ -973,50 +973,7 @@ body {
 }
 
 /* SCOREBOARD / LEADERBOARD */
-.sb {
-  width: 100%;
-  background: #ffffff;
-  border: 2px solid var(--border-color);
-  border-left: 6px solid var(--red-margin);
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.02);
-}
 
-.sbr {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0.8rem 1.2rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.sbr:last-child {
-  border-bottom: none;
-}
-
-.sbrank {
-  font-size: 0.85rem;
-  color: var(--text-light);
-  width: 20px;
-  font-weight: 700;
-}
-
-.sbname {
-  flex: 1;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.sbscore {
-  font-size: 1.1rem;
-  color: var(--primary);
-  font-weight: 700;
-}
 
 /* NOTIFICATIONS & TAGS */
 .notif {
@@ -1089,10 +1046,80 @@ body {
   position: absolute;
   top: 1.2rem;
   right: 1.2rem;
+  z-index: 10;
 }
 
 #waiting {
   position: relative;
+}
+
+/* Leaderboard Grid Table */
+.sb {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.sb-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  border-left: 6px solid var(--red-margin);
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.02);
+}
+
+.sb-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.sb-table th, .sb-table td {
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.sb-table th {
+  background: #fbfbf9;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.sb-table th:first-child, .sb-table td:first-child {
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-light);
+  border-right: 1px dashed var(--border-color);
+  position: sticky;
+  left: 0;
+  background: inherit;
+  z-index: 2;
+}
+
+.sb-table td:first-child {
+  background: #fdfdfb;
+}
+
+.sb-table th:first-child {
+  background: #fbfbf9;
+}
+
+.sb-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sb-table-total {
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(108, 157, 246, 0.05) !important;
+}
+
+.sb-table-total td {
+  border-top: 2px solid var(--border-color);
+  font-weight: 700;
 }
 
 /* HOW TO PLAY MODAL */

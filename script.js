@@ -62,6 +62,56 @@ let lastRound    = 0;
 let isPickLocked = false;
 let isChitUnfolded = false;
 let localRoundAnimationPlayed = {};
+let localFoundIds = [];
+let isFirstPollRender = true;
+
+function ensureHistory(players, roundNum) {
+  const rIdx = roundNum - 1;
+  players.forEach(p => {
+    if (!p.history) p.history = [];
+    for (let i = 0; i <= rIdx; i++) {
+      if (p.history[i] === undefined) {
+        p.history[i] = 0;
+      }
+    }
+  });
+}
+
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.7 }
+    });
+  }
+}
+
+function triggerRevealConfetti() {
+  if (typeof confetti === 'function') {
+    const duration = 2.5 * 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 }
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 }
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  }
+}
 
 // ─────────────────────────────────────────────
 //  PENCIL-SKETCH ROLE ILLUSTRATION SVGS
@@ -292,7 +342,7 @@ async function createRoom() {
   myRoom = genCode();
   const data = {
     code:myRoom, host:myId, phase:'waiting',
-    players:[{ id:myId, name:myName, color:CLRS[0], avatar:AVTR[0], score:0 }],
+    players:[{ id:myId, name:myName, color:CLRS[0], avatar:AVTR[0], score:0, history:[] }],
     roles:{}, stage:{ seekerId:null, seeking:null, foundIds:[] },
     chits:[],
     chat:[{ sys:true, text:`Room created! Share code ${myRoom} with friends.` }],
@@ -317,7 +367,7 @@ async function joinRoom() {
     const players = data.players || [];
     if (players.length >= 8)     { document.getElementById('lerr').textContent = 'Room is full (8/8).'; return; }
     const idx = players.length;
-    players.push({ id:myId, name:myName, color:CLRS[idx], avatar:AVTR[idx], score:0 });
+    players.push({ id:myId, name:myName, color:CLRS[idx], avatar:AVTR[idx], score:0, history:[] });
     const chat = data.chat || [];
     chat.push({ sys:true, text:`${myName} joined the court!` });
     await fbPatch('rooms/'+code, { players, chat });
@@ -339,6 +389,7 @@ async function leaveRoom() {
       if (players.length === 0) {
         await fbDelete('rooms/' + myRoom);
       } else {
+        ensureHistory(players, data.round || 1);
         const host = data.host === myId ? players[0].id : data.host;
         const chat = data.chat || [];
         chat.push({ sys: true, text: `${myName} left the court.` });
@@ -386,6 +437,11 @@ async function leaveRoom() {
           chat.push({
             sys: true,
             text: `${leavingRole} left the court. The chain has been updated.`
+          });
+          const chainText = newChain.join(' ➔ ');
+          chat.push({
+            sys: true,
+            text: `Current Chain: ${chainText}`
           });
 
           // Transition to reveal if seeking is complete or no more matching matches can be made
@@ -492,13 +548,26 @@ async function poll() {
         if (chit) {
           chit.className = 'chit folded';
         }
+        localFoundIds = []; // Reset local found cache for the new round
       }
+
+      const stage = data.stage || {};
+      const foundIds = stage.foundIds || [];
+      if (isFirstPollRender) {
+        localFoundIds = [...foundIds];
+        isFirstPollRender = false;
+      } else if (foundIds.length > localFoundIds.length) {
+        triggerConfetti();
+      }
+      localFoundIds = [...foundIds];
+
       renderGame(data);
     }
     else if (data.phase === 'reveal') {
       if (lastPhase !== 'reveal') {
         show('reveal');
         lastPhase = 'reveal';
+        triggerRevealConfetti(); // Fire final round confetti!
       }
       renderReveal(data);
     }
@@ -718,17 +787,27 @@ async function pick(targetId) {
       // ✓ CORRECT — seeker earns points for their current role
       const seekerPoints = ROLE_DATA[myRoleNow].pts;
       const meP = players.find(p => p.id === myId);
-      if (meP) meP.score += seekerPoints;
+      if (meP) {
+        meP.score += seekerPoints;
+        if (!meP.history) meP.history = [];
+        const rIdx = (data.round || 1) - 1;
+        meP.history[rIdx] = (meP.history[rIdx] || 0) + seekerPoints;
+      }
 
       chat.push({ sys:true, text:`✓ ${me.name} (${myRoleNow}) correctly found ${target.name} (${seeking}) — +${seekerPoints} pts!` });
 
       // Mark target as found
       foundIds.push(myId);
+      localFoundIds = [...foundIds]; // Update local cache so poll doesn't duplicate confetti
+      
+      // Trigger confetti instantly for the clicker
+      triggerConfetti();
 
       // Is this the last role? (target is the last in the chain)
       if (isLastRole(roles, seeking)) {
         // Game over
         chat.push({ sys:true, text:`🏆 Round complete! All roles have been revealed.` });
+        ensureHistory(players, data.round || 1);
         await fbSet('rooms/'+myRoom, { ...data, players, roles:roleMap, chat, stage:{...stage, foundIds}, phase:'reveal' });
       } else {
         // Next seeker = the found player, seeking the next role
@@ -807,14 +886,54 @@ function renderReveal(data) {
   document.getElementById('rcards').innerHTML = ch;
 
   // Leaderboard
+  ensureHistory(players, data.round || 1);
   const sorted = [...players].sort((a,b) => b.score - a.score);
-  let lb = '';
-  sorted.forEach((p,i) => {
-    lb += `<div class="sbr"><div class="sbrank">${i+1}</div>
-      <div class="sbname">${p.avatar} ${p.name}${p.id===myId?'<span class="tag">you</span>':''}</div>
-      <div class="sbscore">${p.score} pts</div></div>`;
+  const currentRound = data.round || 1;
+
+  let headerHtml = '<th>Round</th>';
+  sorted.forEach(p => {
+    headerHtml += `
+      <th>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+          <span style="font-size:1.2rem;">${p.avatar}</span>
+          <span style="font-weight:700;">${p.name}${p.id===myId?' (you)':''}</span>
+        </div>
+      </th>
+    `;
   });
-  document.getElementById('lboard').innerHTML = lb;
+
+  let rowsHtml = '';
+  for (let r = 1; r <= currentRound; r++) {
+    let rowCells = `<td>Round ${r}</td>`;
+    sorted.forEach(p => {
+      const history = p.history || [];
+      const rScore = history[r - 1] !== undefined ? history[r - 1] : 0;
+      rowCells += `<td>${rScore}</td>`;
+    });
+    rowsHtml += `<tr>${rowCells}</tr>`;
+  }
+
+  // Add total row
+  let totalCells = '<td>Total</td>';
+  sorted.forEach(p => {
+    totalCells += `<td style="font-size:1.05rem; font-weight:700; color:var(--primary);">${p.score} pts</td>`;
+  });
+  rowsHtml += `<tr class="sb-table-total">${totalCells}</tr>`;
+
+  const tableHtml = `
+    <div class="sb-table-wrapper">
+      <table class="sb-table">
+        <thead>
+          <tr>${headerHtml}</tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('lboard').innerHTML = tableHtml;
 
   const isHost = data.host === myId;
   document.getElementById('nrbtn').disabled = !isHost;
