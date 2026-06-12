@@ -59,6 +59,7 @@ let lastPhase    = '';
 let lastRound    = 0;
 let isPickLocked = false;
 let isChitUnfolded = false;
+let localRoundAnimationPlayed = {};
 
 // ─────────────────────────────────────────────
 //  PENCIL-SKETCH ROLE ILLUSTRATION SVGS
@@ -291,6 +292,7 @@ async function createRoom() {
     code:myRoom, host:myId, phase:'waiting',
     players:[{ id:myId, name:myName, color:CLRS[0], avatar:AVTR[0], score:0 }],
     roles:{}, stage:{ seekerId:null, seeking:null, foundIds:[] },
+    chits:[],
     chat:[{ sys:true, text:`Room created! Share code ${myRoom} with friends.` }],
     round:1
   };
@@ -430,8 +432,53 @@ async function poll() {
     const me = (data.players||[]).find(p => p.id === myId);
     if (!me)   { stopPoll(); show('lobby'); return; }
 
-    if      (data.phase==='waiting') { if(lastPhase!=='waiting'){show('waiting');lastPhase='waiting'} renderWaiting(data); }
-    else if (data.phase==='playing') {
+    if (data.phase === 'waiting') {
+      if (lastPhase !== 'waiting') {
+        show('waiting');
+        lastPhase = 'waiting';
+        showLobbyUI();
+        localRoundAnimationPlayed = {}; // Reset tracking
+      }
+      renderWaiting(data);
+    }
+    else if (data.phase === 'shuffling' || data.phase === 'picking') {
+      const myRole = data.roles?.[myId];
+      if (myRole) {
+        if (lastPhase !== 'picking-playing') {
+          show('game');
+          lastPhase = 'picking-playing';
+          lastRound = data.round || 1;
+          lastChatLen = 0;
+          document.getElementById('cm').innerHTML = '';
+          isChitUnfolded = false;
+          const chit = document.getElementById('role-chit');
+          if (chit) chit.className = 'chit folded';
+        }
+        renderGame(data);
+      } else {
+        const round = data.round || 1;
+        if (!localRoundAnimationPlayed[round]) {
+          localRoundAnimationPlayed[round] = 'playing';
+          show('waiting');
+          lastPhase = 'shuffling';
+          renderPicking(data, true);
+          setTimeout(() => {
+            localRoundAnimationPlayed[round] = 'done';
+            poll(); // Force re-render to static
+          }, 2800);
+        }
+        else if (localRoundAnimationPlayed[round] === 'playing') {
+          show('waiting');
+          lastPhase = 'shuffling';
+        }
+        else if (localRoundAnimationPlayed[round] === 'done') {
+          show('waiting');
+          lastPhase = 'picking';
+          renderPicking(data, false);
+        }
+      }
+    }
+    else if (data.phase === 'playing') {
       if (lastPhase !== 'playing' || lastRound !== data.round) {
         show('game');
         lastPhase = 'playing';
@@ -446,7 +493,13 @@ async function poll() {
       }
       renderGame(data);
     }
-    else if (data.phase==='reveal')  { if(lastPhase!=='reveal') {show('reveal');lastPhase='reveal'} renderReveal(data); }
+    else if (data.phase === 'reveal') {
+      if (lastPhase !== 'reveal') {
+        show('reveal');
+        lastPhase = 'reveal';
+      }
+      renderReveal(data);
+    }
   } catch(e) {}
 }
 
@@ -459,6 +512,10 @@ function renderWaiting(data) {
   document.getElementById('wcount').textContent = n;
   const roles = activeRoles(n);
   document.getElementById('wroles').textContent = 'Roles: ' + roles.join(', ');
+  
+  // Render chits inside the glass bowl
+  renderBowlChits(n, 'chits-layer');
+  
   let h = '';
   for (let i=0;i<8;i++) {
     const p = players[i];
@@ -466,12 +523,18 @@ function renderWaiting(data) {
     else   h += `<div class="slot"><div class="dot"></div><span style="color:var(--text-light);font-size:.78rem">Empty</span></div>`;
   }
   document.getElementById('wslots').innerHTML = h;
+  
   const isHost = data.host === myId;
-  document.getElementById('sbtn').disabled = !(isHost && n >= 2);
-  document.getElementById('wstatus').textContent =
-    !isHost ? `Waiting for host to start... (${n}/8)` :
-    n < 2   ? 'Need at least 2 players.' :
-              `${n}/8 players ready. You can start!`;
+  document.getElementById('sbtn').disabled = !(isHost && n >= 2) || (data.phase === 'shuffling');
+  
+  if (data.phase === 'shuffling') {
+    document.getElementById('wstatus').textContent = `🔮 Juggling and shuffling court chits...`;
+  } else {
+    document.getElementById('wstatus').textContent =
+      !isHost ? `Waiting for host to start... (${n}/8)` :
+      n < 2   ? 'Need at least 2 players.' :
+                `${n}/8 players ready. You can start!`;
+  }
 }
 
 function showHowToPlay() {
@@ -483,25 +546,52 @@ function closeHowToPlay() {
 }
 
 async function startGame() {
-  const data = await fbGet('rooms/'+myRoom);
+  const data = await fbGet('rooms/' + myRoom);
   if (!data || data.host !== myId) return;
   const players = data.players || [];
   const n = players.length;
   const roles = activeRoles(n);
-  // Shuffle roles
+  
+  // Shuffle roles for the chits
   const rlist = [...roles];
-  for (let i=rlist.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[rlist[i],rlist[j]]=[rlist[j],rlist[i]]; }
-  const roleMap = {};
-  players.forEach((p,i) => { roleMap[p.id] = rlist[i]; });
-  const rajaId = Object.keys(roleMap).find(id => roleMap[id]==='Raja');
+  for (let i = rlist.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rlist[i], rlist[j]] = [rlist[j], rlist[i]];
+  }
+  
+  // Create unclaimed chits
+  const chits = rlist.map((role, idx) => ({
+    id: idx,
+    role: role,
+    pickedBy: null
+  }));
+  
   const chat = data.chat || [];
-  chat.push({ sys:true, text:'━━ The game begins! ━━' });
-  chat.push({ sys:true, text:`Raja is searching for Rani... (${n} players, roles: ${roles.join(' → ')})` });
-  await fbSet('rooms/'+myRoom, {
-    ...data, roles:roleMap,
-    stage:{ seekerId:rajaId, seeking:roles[1], foundIds:[], activeRoles:roles },
-    phase:'playing', chat
+  chat.push({ sys: true, text: '━━ Shuffling court chits... ━━' });
+  
+  // Set phase to shuffling
+  await fbSet('rooms/' + myRoom, {
+    ...data,
+    roles: {}, // Reset roles
+    chits: chits,
+    stage: { seekerId: null, seeking: null, foundIds: [], activeRoles: roles },
+    phase: 'shuffling',
+    chat
   });
+  
+  // Wait 3.0s and transition to picking phase
+  setTimeout(async () => {
+    try {
+      const currentData = await fbGet('rooms/' + myRoom);
+      if (currentData && currentData.phase === 'shuffling') {
+        currentData.phase = 'picking';
+        currentData.chat.push({ sys: true, text: '━━ Chits scattered! Claim your role! ━━' });
+        await fbSet('rooms/' + myRoom, currentData);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, 3000);
 }
 
 // ─────────────────────────────────────────────
@@ -537,12 +627,17 @@ function renderGame(data) {
   const seeker   = players.find(p => p.id === seekerId);
   const amI      = seekerId === myId;
 
-  document.getElementById('sl').textContent = amI
-    ? `YOUR TURN — FIND THE ${(seeking||'').toUpperCase()}`
-    : `${seeker ? seeker.name.toUpperCase() : '?'} IS SEEKING`;
-  document.getElementById('sa').textContent = amI
-    ? `Tap the player you think is the ${seeking}!`
-    : `${seeker ? seeker.name : '?'} is looking for the ${seeking}...`;
+  if (data.phase === 'picking') {
+    document.getElementById('sl').textContent = "WAITING FOR COURT";
+    document.getElementById('sa').textContent = "Waiting for other players to claim their chits...";
+  } else {
+    document.getElementById('sl').textContent = amI
+      ? `YOUR TURN — FIND THE ${(seeking||'').toUpperCase()}`
+      : `${seeker ? seeker.name.toUpperCase() : '?'} IS SEEKING`;
+    document.getElementById('sa').textContent = amI
+      ? `Tap the player you think is the ${seeking}!`
+      : `${seeker ? seeker.name : '?'} is looking for the ${seeking}...`;
+  }
 
   let h = '';
   players.forEach(p => {
@@ -751,3 +846,285 @@ async function nextRound() {
 // ─────────────────────────────────────────────
 document.getElementById('inp-name').addEventListener('keydown', e => { if(e.key==='Enter') createRoom(); });
 document.getElementById('inp-code').addEventListener('input',   e => { e.target.value = e.target.value.toUpperCase(); });
+
+// ─────────────────────────────────────────────
+//  GLASS BOWL CHITS & INTERACTIVE CLAIMING
+// ─────────────────────────────────────────────
+const BOWL_CHIT_POSITIONS = [
+  { x: 30, y: 72, rot: -12 },
+  { x: 100, y: 74, rot: 15 },
+  { x: 65, y: 75, rot: 5 },
+  { x: 45, y: 62, rot: -25 },
+  { x: 85, y: 64, rot: 20 },
+  { x: 65, y: 55, rot: -3 },
+  { x: 35, y: 50, rot: 35 },
+  { x: 95, y: 52, rot: -40 }
+];
+
+function renderBowlChits(n, containerId = 'chits-in-bowl') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  const currentCount = container.children.length;
+  if (currentCount === n) return;
+  
+  if (n < currentCount) {
+    container.innerHTML = '';
+    for (let i = 0; i < n; i++) {
+      createBowlChit(container, i, false);
+    }
+  } else {
+    if (currentCount === 0) {
+      for (let i = 0; i < n; i++) {
+        createBowlChit(container, i, i === n - 1);
+      }
+    } else {
+      for (let i = currentCount; i < n; i++) {
+        createBowlChit(container, i, true);
+      }
+    }
+  }
+}
+
+function createBowlChit(container, index, animate) {
+  const pos = BOWL_CHIT_POSITIONS[index] || { x: 65, y: 70, rot: 0 };
+  const div = document.createElement('div');
+  div.className = 'bowl-chit';
+  
+  if (animate) {
+    div.style.setProperty('--target-x', pos.x + 'px');
+    div.style.setProperty('--target-y', pos.y + 'px');
+    div.style.setProperty('--rot', pos.rot + 'deg');
+  } else {
+    div.style.animation = 'none';
+    div.style.left = pos.x + 'px';
+    div.style.top = pos.y + 'px';
+    div.style.transform = `rotate(${pos.rot}deg)`;
+  }
+  container.appendChild(div);
+}
+
+const SCATTERED_CHIT_POSITIONS = [
+  { x: '15%', y: '25%', rot: -15 },
+  { x: '45%', y: '15%', rot: 8 },
+  { x: '75%', y: '20%', rot: -22 },
+  { x: '20%', y: '60%', rot: 25 },
+  { x: '50%', y: '55%', rot: -5 },
+  { x: '80%', y: '65%', rot: 18 },
+  { x: '35%', y: '40%', rot: -10 },
+  { x: '65%', y: '45%', rot: 12 }
+];
+
+function showLobbyUI() {
+  const lobbyHeader = document.getElementById('lobby-header');
+  const lobbyFooter = document.getElementById('lobby-footer');
+  const wLeaveBtn = document.getElementById('w-leave-btn');
+  const pickingHeader = document.getElementById('picking-header');
+  const pickingArea = document.getElementById('picking-area-container');
+  const bowlContainer = document.getElementById('waiting-bowl-container');
+  const bowlBack = document.getElementById('bowl-back');
+  const bowlFront = document.getElementById('bowl-front');
+
+  if (lobbyHeader) {
+    lobbyHeader.style.display = 'flex';
+    lobbyHeader.style.opacity = '1';
+    lobbyHeader.style.transform = 'translateY(0)';
+  }
+  if (lobbyFooter) {
+    lobbyFooter.style.display = 'block';
+    lobbyFooter.style.opacity = '1';
+    lobbyFooter.style.transform = 'translateX(-50%) translateY(0)';
+  }
+  if (wLeaveBtn) {
+    wLeaveBtn.style.display = 'block';
+    wLeaveBtn.style.opacity = '1';
+  }
+  if (pickingHeader) {
+    pickingHeader.style.display = 'none';
+    pickingHeader.style.opacity = '0';
+  }
+  if (pickingArea) {
+    pickingArea.style.display = 'none';
+    pickingArea.style.opacity = '0';
+  }
+  if (bowlContainer) {
+    bowlContainer.style.display = 'flex';
+    bowlContainer.style.opacity = '1';
+  }
+  if (bowlBack) bowlBack.className = 'bowl-back';
+  if (bowlFront) bowlFront.className = 'bowl-front';
+}
+
+function showPickingUI(isShuffling) {
+  const lobbyHeader = document.getElementById('lobby-header');
+  const lobbyFooter = document.getElementById('lobby-footer');
+  const wLeaveBtn = document.getElementById('w-leave-btn');
+  const pickingHeader = document.getElementById('picking-header');
+  const pickingArea = document.getElementById('picking-area-container');
+  const bowlContainer = document.getElementById('waiting-bowl-container');
+  const bowlBack = document.getElementById('bowl-back');
+  const bowlFront = document.getElementById('bowl-front');
+
+  // Fade out lobby details
+  if (lobbyHeader) {
+    lobbyHeader.style.opacity = '0';
+    lobbyHeader.style.transform = 'translateY(-20px)';
+  }
+  if (lobbyFooter) {
+    lobbyFooter.style.opacity = '0';
+    lobbyFooter.style.transform = 'translateX(-50%) translateY(20px)';
+  }
+  if (wLeaveBtn) {
+    wLeaveBtn.style.opacity = '0';
+  }
+
+  // Display none after fade-out transition
+  setTimeout(() => {
+    if (lastPhase === 'shuffling' || lastPhase === 'picking') {
+      if (lobbyHeader) lobbyHeader.style.display = 'none';
+      if (lobbyFooter) lobbyFooter.style.display = 'none';
+      if (wLeaveBtn) wLeaveBtn.style.display = 'none';
+    }
+  }, 500);
+
+  // Fade in picking details
+  if (pickingHeader) {
+    pickingHeader.style.display = 'flex';
+    setTimeout(() => { pickingHeader.style.opacity = '1'; }, 50);
+  }
+  if (pickingArea) {
+    pickingArea.style.display = 'block';
+    setTimeout(() => { pickingArea.style.opacity = '1'; }, 50);
+  }
+
+  if (isShuffling) {
+    if (bowlBack) bowlBack.className = 'bowl-back shuffling';
+    if (bowlFront) bowlFront.className = 'bowl-front shuffling';
+    if (bowlContainer) {
+      bowlContainer.style.display = 'flex';
+      bowlContainer.style.opacity = '1';
+    }
+  } else {
+    if (bowlBack) bowlBack.className = 'bowl-back';
+    if (bowlFront) bowlFront.className = 'bowl-front';
+    if (bowlContainer) {
+      bowlContainer.style.display = 'none';
+      bowlContainer.style.opacity = '0';
+    }
+  }
+}
+
+function renderPicking(data, forceShuffling) {
+  const chits = data.chits || [];
+  const container = document.getElementById('waiting-scattered-chits');
+  if (!container) return;
+  
+  const isShuffling = (forceShuffling !== undefined) ? forceShuffling : (data.phase === 'shuffling');
+  showPickingUI(isShuffling);
+  
+  document.getElementById('waiting-picking-title').textContent = "Claim Your Chit";
+  document.getElementById('waiting-picking-subtitle').textContent = "TAP A FOLDED PAPER TO CLAIM YOUR ROLE";
+
+  if (isShuffling) {
+    // Clear waiting room bowl chits so they don't overlay
+    const chitsLayer = document.getElementById('chits-layer');
+    if (chitsLayer) chitsLayer.innerHTML = '';
+
+    document.getElementById('waiting-picking-status').textContent = "Scattering chits...";
+  }
+  
+  let h = '';
+  
+  chits.forEach((c, idx) => {
+    const pos = SCATTERED_CHIT_POSITIONS[idx % SCATTERED_CHIT_POSITIONS.length];
+    const bowlPos = BOWL_CHIT_POSITIONS[idx % BOWL_CHIT_POSITIONS.length] || { x: 65, y: 70, rot: 0 };
+    const offsetX = bowlPos.x - 80;
+    const offsetY = bowlPos.y;
+    const initRot = bowlPos.rot;
+    
+    if (isShuffling) {
+      h += `<div class="sc-chit sc-chit-pour" style="--target-x: ${pos.x}; --target-y: ${pos.y}; --rot: ${pos.rot}deg; --offset-x: ${offsetX}px; --offset-y: ${offsetY}px; --init-rot: ${initRot}deg">
+        <div class="sc-chit-scribble">?</div>
+      </div>`;
+    } else {
+      if (!c.pickedBy) {
+        h += `<div class="sc-chit" style="--target-x: ${pos.x}; --target-y: ${pos.y}; --rot: ${pos.rot}deg" onclick="claimChit(${c.id})">
+          <div class="sc-chit-scribble">?</div>
+        </div>`;
+      }
+    }
+  });
+  
+  container.innerHTML = h;
+  
+  if (!isShuffling) {
+    const players = data.players || [];
+    const roles = data.roles || {};
+    const pickedCount = Object.keys(roles).length;
+    document.getElementById('waiting-picking-status').textContent = 
+      `Chits claimed: ${pickedCount}/${players.length} · Waiting for remaining players...`;
+  }
+}
+
+async function claimChit(cId) {
+  if (isPickLocked) return;
+  isPickLocked = true;
+  setTimeout(() => { isPickLocked = false; }, 1000);
+
+  const target = event.currentTarget;
+  if (target) {
+    target.classList.add('claimed-anim');
+  }
+
+  try {
+    const data = await fbGet('rooms/' + myRoom);
+    if (!data || data.phase !== 'picking') return;
+    
+    const chits = data.chits || [];
+    const roles = data.roles || {};
+    
+    if (chits[cId].pickedBy) {
+      notify("Someone else claimed this chit! Try another one.");
+      renderPicking(data);
+      return;
+    }
+    
+    chits[cId].pickedBy = myId;
+    roles[myId] = chits[cId].role;
+    
+    const players = data.players || [];
+    const allPicked = chits.every(c => !!c.pickedBy);
+    
+    let nextPhase = 'picking';
+    let stage = data.stage || {};
+    
+    if (allPicked) {
+      nextPhase = 'playing';
+      const rajaId = Object.keys(roles).find(id => roles[id] === 'Raja');
+      const activeR = activeRoles(players.length);
+      stage = {
+        seekerId: rajaId,
+        seeking: activeR[1],
+        foundIds: [],
+        activeRoles: activeR
+      };
+      
+      data.chat.push({ sys: true, text: '━━ All chits claimed! The game begins! ━━' });
+      data.chat.push({ sys: true, text: 'Raja is searching for Rani...' });
+    }
+    
+    await fbSet('rooms/' + myRoom, {
+      ...data,
+      roles,
+      chits,
+      phase: nextPhase,
+      stage
+    });
+    
+    show('game');
+    lastPhase = 'picking-playing';
+    
+  } catch (e) {
+    console.error(e);
+  }
+}

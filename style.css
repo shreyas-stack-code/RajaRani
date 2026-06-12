@@ -1146,3 +1146,374 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   GLASS BOWL & INTERACTIVE CHIT PICKING STYLES (PHYSICS DRIVEN)
+   ========================================================================== */
+
+/* Waiting screen bowl container */
+.bowl-container {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  margin: 1.5rem 0 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bowl-back {
+  width: 160px;
+  height: 100px;
+  background: transparent;
+  border-radius: 10px 10px 80px 80px;
+  position: absolute;
+  left: calc(50% - 80px);
+  top: 10px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 -8px 16px rgba(0, 0, 0, 0.02);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bowl-front {
+  width: 160px;
+  height: 100px;
+  border-radius: 10px 10px 80px 80px;
+  position: absolute;
+  left: calc(50% - 80px);
+  top: 10px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    inset 0 8px 16px rgba(255, 255, 255, 0.45),
+    0 10px 20px rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.bowl-glass-reflection {
+  position: absolute;
+  top: 6px;
+  left: 15px;
+  right: 15px;
+  height: 12px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  border-radius: 50%;
+}
+
+/* Chits layer inside the bowl container */
+.chits-layer {
+  position: absolute;
+  width: 160px;
+  height: 100px;
+  left: calc(50% - 80px);
+  top: 10px;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Bowl chits (Lobby phase drop-in) */
+.bowl-chit {
+  width: 28px;
+  height: 16px;
+  background: #ffffff;
+  border: 1.5px solid #d1cbc0;
+  border-radius: 2px;
+  position: absolute;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  animation: drop-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes drop-in {
+  0% {
+    transform: translateY(-120px) rotate(0deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(var(--target-y)) rotate(calc(var(--rot) * 1.2));
+  }
+  80% {
+    transform: translateY(calc(var(--target-y) - 6px)) rotate(calc(var(--rot) * 0.9));
+  }
+  100% {
+    transform: translateY(var(--target-y)) rotate(var(--rot));
+    left: var(--target-x);
+    opacity: 1;
+  }
+}
+
+/* Shaking & Pouring Bowl Animation */
+.bowl-back.shuffling, .bowl-front.shuffling {
+  animation: bowl-pour-sequence 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes bowl-pour-sequence {
+  /* 1. SHAKING (0% to 42% -> 0s to 1.2s) */
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  7% { transform: translate(-10px, 8px) rotate(-8deg); }
+  14% { transform: translate(10px, -8px) rotate(8deg); }
+  21% { transform: translate(-8px, -4px) rotate(-5deg); }
+  28% { transform: translate(8px, 6px) rotate(5deg); }
+  35% { transform: translate(-5px, 3px) rotate(-3deg); }
+  42% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+
+  /* 2. TILT AND POUR (42% to 57% -> 1.2s to 1.6s) */
+  57% { transform: translate(-30px, -20px) rotate(135deg); opacity: 1; }
+
+  /* 3. SUSTAIN TILT & FADE (57% to 100% -> 1.6s to 2.8s) */
+  78% { transform: translate(-40px, -10px) rotate(145deg); opacity: 0.5; }
+  100% { transform: translate(-50px, 10px) rotate(160deg); opacity: 0; }
+}
+
+/* Scattered Chits Container (Dashed picking court) */
+.scattered-chits-container {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px dashed var(--border-color);
+  border-radius: 24px;
+  width: 100%;
+  height: 280px;
+  position: relative;
+  overflow: visible;
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.01);
+}
+
+.scattered-chits {
+  position: absolute;
+  inset: 0;
+}
+
+/* Folded Chit Styling inside picking court */
+.sc-chit {
+  width: 76px;
+  height: 48px;
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.4s ease;
+  box-shadow: 
+    1px 1px 0 #ffffff, 
+    2px 2px 0 #d9d3c5, 
+    0 4px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  left: var(--target-x);
+  top: var(--target-y);
+  transform: rotate(var(--rot));
+}
+
+.sc-chit-scribble {
+  font-family: 'Caveat', cursive;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a365d;
+  opacity: 0.2;
+  user-select: none;
+}
+
+.sc-chit:hover {
+  transform: scale(1.08) rotate(0deg) !important;
+  border-color: var(--primary);
+  box-shadow: 
+    1px 1px 0 #ffffff, 
+    2px 2px 0 var(--primary), 
+    0 8px 16px rgba(108,157,246,0.15);
+  z-index: 10;
+}
+
+.sc-chit:active {
+  transform: scale(0.96) !important;
+}
+
+/* Shuffling, pouring and gravity drop animation */
+.sc-chit-pour {
+  animation: chit-pour-scatter 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.sc-chit-pour .sc-chit-scribble {
+  animation: scribble-grow 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scribble-grow {
+  0%, 78% { font-size: 0.6rem; opacity: 0; }
+  100% { font-size: 1.8rem; opacity: 0.2; }
+}
+
+@keyframes chit-pour-scatter {
+  /* 1. SHAKING / SLOSHING IN BOWL (0% to 42% -> 0s to 1.2s) */
+  /* Chits shift opposite to the bowl motion for inertia and stay small */
+  0% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    left: calc(50% + var(--offset-x));
+    top: calc(-134px + var(--offset-y));
+    transform: rotate(var(--init-rot));
+  }
+  7% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% + var(--offset-x) + 8px);
+    top: calc(-134px + var(--offset-y) - 4px);
+    transform: rotate(calc(var(--init-rot) + 12deg));
+  }
+  14% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% + var(--offset-x) - 8px);
+    top: calc(-134px + var(--offset-y) - 4px);
+    transform: rotate(calc(var(--init-rot) - 12deg));
+  }
+  21% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% + var(--offset-x) + 6px);
+    top: calc(-134px + var(--offset-y) - 2px);
+    transform: rotate(calc(var(--init-rot) + 8deg));
+  }
+  28% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% + var(--offset-x) - 6px);
+    top: calc(-134px + var(--offset-y) - 2px);
+    transform: rotate(calc(var(--init-rot) - 8deg));
+  }
+  35% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% + var(--offset-x) + 4px);
+    top: calc(-134px + var(--offset-y) - 1px);
+    transform: rotate(calc(var(--init-rot) + 4deg));
+  }
+  42% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% + var(--offset-x));
+    top: calc(-134px + var(--offset-y));
+    transform: rotate(var(--init-rot));
+  }
+
+  /* 2. SLIDING TO BOWL MOUTH (42% to 57% -> 1.2s to 1.6s) */
+  /* Slither towards the bottom-left corner of the tilted bowl */
+  57% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(50% - 60px + var(--offset-x) * 0.3);
+    top: calc(-134px + 60px + var(--offset-y) * 0.3);
+    transform: rotate(calc(var(--init-rot) + 60deg));
+  }
+
+  /* 3. GRAVITY FALL (57% to 78% -> 1.6s to 2.2s) */
+  /* Accelerate downward and out towards the target scattered position */
+  78% {
+    width: 28px;
+    height: 16px;
+    border: 1.5px solid #d1cbc0;
+    left: calc(var(--target-x) * 0.8 + 10%);
+    top: calc(var(--target-y) - 30px);
+    transform: rotate(calc(var(--rot) - 30deg));
+  }
+
+  /* 4. BOUNCE, GROW & SETTLE (78% to 100% -> 2.2s to 2.8s) */
+  /* Chits expand from 28x16 to full 76x48 size as they land and bounce */
+  87% {
+    width: 50px;
+    height: 32px;
+    border: 1.8px solid var(--border-color);
+    box-shadow: 
+      1px 1px 0 #ffffff, 
+      2px 2px 0 #d9d3c5, 
+      0 6px 12px rgba(0,0,0,0.05);
+    left: var(--target-x);
+    top: calc(var(--target-y) + 12px); /* overshoot down */
+    transform: rotate(calc(var(--rot) + 12deg));
+  }
+  94% {
+    width: 68px;
+    height: 44px;
+    border: 2px solid var(--border-color);
+    left: var(--target-x);
+    top: calc(var(--target-y) - 6px); /* bounce up slightly */
+    transform: rotate(calc(var(--rot) - 5deg));
+  }
+  100% {
+    width: 76px;
+    height: 48px;
+    border: 2px solid var(--border-color);
+    box-shadow: 
+      1px 1px 0 #ffffff, 
+      2px 2px 0 #d9d3c5, 
+      0 4px 8px rgba(0,0,0,0.05);
+    left: var(--target-x);
+    top: var(--target-y);
+    transform: rotate(var(--rot));
+  }
+}
+
+/* Claim click animation */
+.sc-chit.claimed-anim {
+  opacity: 0;
+  transform: scale(0.2) rotate(180deg) !important;
+  pointer-events: none;
+}
+
+/* Visibility transitions */
+.lobby-fade-el {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+}
+.lobby-fade-el.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.lobby-fade-down-el {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+}
+.lobby-fade-down-el.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.picking-fade-el {
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+.picking-fade-el.visible {
+  opacity: 1;
+}
+
+.waiting-top-wrapper {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.waiting-bottom-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 340px;
+  margin-top: 1.5rem;
+}
+
