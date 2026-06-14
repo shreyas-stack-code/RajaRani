@@ -1544,3 +1544,515 @@ body {
   margin-top: 1.5rem;
 }
 
+/* ==========================================================================
+   BACKGROUND PENCIL DOODLES
+   ========================================================================== */
+.bg-doodles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+
+.doodle {
+  position: absolute;
+  color: var(--text-dark);
+  opacity: 0.11;
+  transition: opacity 0.3s;
+}
+
+/* Column 1 (Far Left: center at 4%) */
+.d-crown {
+  top: 0.5%;
+  left: 4%;
+  width: 190px;
+  height: 190px;
+  transform: translateX(-50%) rotate(-12deg);
+}
+
+.d-sparkle {
+  top: 31%;
+  left: 4%;
+  width: 24px;
+  height: 24px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+.d-shield {
+  top: 43%;
+  left: 4%;
+  width: 75px;
+  height: 75px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-coin {
+  top: 54%;
+  left: 4%;
+  width: 30px;
+  height: 30px;
+  transform: translateX(-50%) rotate(5deg);
+}
+
+.d-postbox {
+  top: 68%;
+  left: 4%;
+  width: 90px;
+  height: 90px;
+  transform: translateX(-50%) rotate(10deg);
+}
+
+.d-milk {
+  bottom: 2%;
+  left: 4%;
+  width: 90px;
+  height: 90px;
+  transform: translateX(-50%) rotate(-15deg);
+}
+
+/* Column 2 (Inner Left 1: center at 15.5%) */
+.d-check {
+  top: 13%;
+  left: 15.5%;
+  width: 35px;
+  height: 35px;
+  transform: translateX(-50%) rotate(5deg);
+}
+
+.d-envelope {
+  top: 25%;
+  left: 15.5%;
+  width: 50px;
+  height: 40px;
+  transform: translateX(-50%) rotate(12deg);
+}
+
+.d-star1 {
+  top: 36%;
+  left: 15.5%;
+  width: 25px;
+  height: 25px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+.d-footprints {
+  top: 46%;
+  left: 15.5%;
+  width: 75px;
+  height: 75px;
+  transform: translateX(-50%) rotate(35deg);
+}
+
+.d-police-2 {
+  top: 60%;
+  left: 15.5%;
+  width: 150px;
+  height: 150px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-thief-2 {
+  bottom: 2%;
+  left: 15.5%;
+  width: 100px;
+  height: 100px;
+  transform: translateX(-50%) rotate(10deg);
+}
+
+/* Column 3 (Inner Left 2: center at 27%) */
+.d-money-3 {
+  top: 6%;
+  left: 27%;
+  width: 170px;
+  height: 170px;
+  transform: translateX(-50%) rotate(-15deg);
+}
+
+.d-dots {
+  top: 30%;
+  left: 27%;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%);
+}
+
+.d-scroll {
+  top: 38%;
+  left: 27%;
+  width: 80px;
+  height: 80px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+.d-exclamation {
+  top: 54%;
+  left: 27%;
+  width: 30px;
+  height: 40px;
+  transform: translateX(-50%) rotate(-5deg);
+}
+
+.d-tiara-2 {
+  top: 66%;
+  left: 27%;
+  width: 90px;
+  height: 90px;
+  transform: translateX(-50%) rotate(18deg);
+}
+
+.d-shield-mini {
+  bottom: 5%;
+  left: 27%;
+  width: 45px;
+  height: 45px;
+  transform: translateX(-50%) rotate(-12deg);
+}
+
+/* Column 4 (Inner Left 3: center at 38.5%) */
+.d-loop {
+  top: 15%;
+  left: 38.5%;
+  width: 40px;
+  height: 40px;
+  transform: translateX(-50%) rotate(25deg);
+}
+
+.d-police {
+  top: 31%;
+  left: 38.5%;
+  width: 75px;
+  height: 75px;
+  transform: translateX(-50%) rotate(12deg);
+}
+
+.d-star-3 {
+  top: 44%;
+  left: 38.5%;
+  width: 24px;
+  height: 24px;
+  transform: translateX(-50%) rotate(10deg);
+}
+
+.d-wanted-2 {
+  top: 59%;
+  left: 38.5%;
+  width: 95px;
+  height: 38px;
+  transform: translateX(-50%) rotate(5deg);
+}
+
+.d-money-2 {
+  top: 75%;
+  left: 38.5%;
+  width: 85px;
+  height: 85px;
+  transform: translateX(-50%) rotate(-20deg);
+}
+
+.d-crown-mini-2 {
+  bottom: 4%;
+  left: 38.5%;
+  width: 45px;
+  height: 45px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+/* Column 5 (Center: center at 50%) */
+.d-crown-2 {
+  top: 2%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  transform: translateX(-50%) rotate(8deg);
+}
+
+.d-star2 {
+  top: 8%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%) rotate(-5deg);
+}
+
+.d-shield-2 {
+  top: 14%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  transform: translateX(-50%) rotate(12deg);
+}
+
+.d-swirl-2 {
+  bottom: 28%;
+  left: 50%;
+  width: 45px;
+  height: 45px;
+  transform: translateX(-50%) rotate(-30deg);
+}
+
+.d-postbox-2 {
+  bottom: 15%;
+  left: 50%;
+  width: 85px;
+  height: 85px;
+  transform: translateX(-50%) rotate(10deg);
+}
+
+.d-milk-2 {
+  bottom: 2%;
+  left: 50%;
+  width: 85px;
+  height: 85px;
+  transform: translateX(-50%) rotate(-15deg);
+}
+
+/* Column 6 (Inner Right 3: center at 61.5%) */
+.d-arrow-3 {
+  top: 11%;
+  left: 61.5%;
+  width: 40px;
+  height: 40px;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.d-wanted {
+  top: 27%;
+  left: 61.5%;
+  width: 95px;
+  height: 38px;
+  transform: translateX(-50%) rotate(5deg);
+}
+
+.d-coin-2 {
+  top: 42%;
+  left: 61.5%;
+  width: 25px;
+  height: 25px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-envelope-2 {
+  top: 57%;
+  left: 61.5%;
+  width: 50px;
+  height: 40px;
+  transform: translateX(-50%) rotate(12deg);
+}
+
+.d-footprints-2 {
+  top: 73%;
+  left: 61.5%;
+  width: 75px;
+  height: 75px;
+  transform: translateX(-50%) rotate(35deg);
+}
+
+.d-shield-mini-2 {
+  bottom: 7%;
+  left: 61.5%;
+  width: 45px;
+  height: 45px;
+  transform: translateX(-50%) rotate(-12deg);
+}
+
+/* Column 7 (Inner Right 2: center at 73%) */
+.d-guilty-2 {
+  top: 5%;
+  left: 73%;
+  width: 85px;
+  height: 38px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-heart {
+  top: 19%;
+  left: 73%;
+  width: 30px;
+  height: 30px;
+  transform: translateX(-50%) rotate(-10deg);
+}
+
+.d-scroll-2 {
+  top: 34%;
+  left: 73%;
+  width: 80px;
+  height: 80px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+.d-star-4 {
+  top: 50%;
+  left: 73%;
+  width: 24px;
+  height: 24px;
+  transform: translateX(-50%) rotate(10deg);
+}
+
+.d-dagger-2 {
+  top: 66%;
+  left: 73%;
+  width: 98px;
+  height: 98px;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.d-crown-mini {
+  bottom: 5%;
+  left: 73%;
+  width: 40px;
+  height: 40px;
+  transform: translateX(-50%) rotate(-10deg);
+}
+
+/* Column 8 (Inner Right 1: center at 84.5%) */
+.d-money {
+  top: 10%;
+  left: 84.5%;
+  width: 151px;
+  height: 151px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+.d-arrow {
+  top: 36%;
+  left: 84.5%;
+  width: 40px;
+  height: 40px;
+  transform: translateX(-50%) rotate(20deg);
+}
+
+.d-swirl {
+  top: 46%;
+  left: 84.5%;
+  width: 50px;
+  height: 50px;
+  transform: translateX(-50%) rotate(15deg);
+}
+
+.d-thief {
+  top: 56%;
+  left: 84.5%;
+  width: 115px;
+  height: 115px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-guilty {
+  top: 74%;
+  left: 84.5%;
+  width: 85px;
+  height: 38px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-tiara {
+  bottom: 3%;
+  left: 84.5%;
+  width: 95px;
+  height: 95px;
+  transform: translateX(-50%) rotate(18deg);
+}
+
+/* Column 9 (Far Right: center at 96%) */
+.d-shh {
+  top: 4%;
+  left: 96%;
+  width: 70px;
+  height: 35px;
+  transform: translateX(-50%) rotate(-5deg);
+}
+
+.d-arrow-2 {
+  top: 13%;
+  left: 96%;
+  width: 40px;
+  height: 40px;
+  transform: translateX(-50%) rotate(130deg);
+}
+
+.d-tiara-3 {
+  top: 22%;
+  left: 96%;
+  width: 95px;
+  height: 95px;
+  transform: translateX(-50%) rotate(18deg);
+}
+
+.d-crown-3 {
+  top: 38%;
+  left: 96%;
+  width: 190px;
+  height: 190px;
+  transform: translateX(-50%) rotate(-12deg);
+}
+
+.d-shield-3 {
+  top: 68%;
+  left: 96%;
+  width: 75px;
+  height: 75px;
+  transform: translateX(-50%) rotate(-8deg);
+}
+
+.d-dagger {
+  bottom: 4%;
+  left: 96%;
+  width: 70px;
+  height: 70px;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  /* On smaller viewports, simplify and hide all 49 non-corner doodles to prevent overlap with central interface layout */
+  .d-sparkle, .d-shield, .d-coin, .d-postbox,
+  .d-check, .d-envelope, .d-star1, .d-footprints, .d-police-2, .d-thief-2,
+  .d-guilty, .d-dots, .d-scroll, .d-exclamation, .d-tiara-2, .d-shield-mini,
+  .d-star-3, .d-loop, .d-wanted-2, .d-money-2, .d-crown-mini-2,
+  .d-crown-2, .d-star2, .d-shield-2, .d-swirl-2, .d-postbox-2, .d-milk-2,
+  .d-arrow-3, .d-wanted, .d-coin-2, .d-envelope-2, .d-footprints-2, .d-shield-mini-2,
+  .d-guilty-2, .d-heart, .d-scroll-2, .d-star-4, .d-dagger-2, .d-crown-mini,
+  .d-arrow, .d-swirl, .d-thief, .d-money-3,
+  .d-arrow-2, .d-shh, .d-dagger, .d-crown-3, .d-shield-3, .d-tiara-3 {
+    display: none;
+  }
+  .d-crown {
+    top: 3%;
+    left: 3%;
+    width: 70px;
+    height: 70px;
+    transform: rotate(-12deg);
+  }
+  .d-money {
+    top: 3%;
+    right: 3%;
+    width: 80px;
+    height: 80px;
+    transform: rotate(15deg);
+  }
+  .d-police {
+    top: 2%;
+    left: 45%;
+    width: 55px;
+    height: 55px;
+    transform: translateX(-50%) rotate(12deg);
+  }
+  .d-milk {
+    bottom: 4%;
+    left: 4%;
+    width: 70px;
+    height: 70px;
+    transform: rotate(-15deg);
+  }
+  .d-tiara {
+    bottom: 3%;
+    right: 4%;
+    width: 75px;
+    height: 75px;
+    transform: rotate(18deg);
+  }
+}
