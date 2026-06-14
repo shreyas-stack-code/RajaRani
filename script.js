@@ -946,20 +946,51 @@ async function nextRound() {
   const players = data.players || [];
   const n = players.length;
   const roles = activeRoles(n);
+  
+  // Shuffle roles for the chits
   const rlist = [...roles];
-  for (let i=rlist.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[rlist[i],rlist[j]]=[rlist[j],rlist[i]]; }
-  const roleMap = {};
-  players.forEach((p,i) => { roleMap[p.id] = rlist[i]; });
-  const rajaId = Object.keys(roleMap).find(id => roleMap[id]==='Raja');
+  for (let i = rlist.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rlist[i], rlist[j]] = [rlist[j], rlist[i]];
+  }
+  
+  // Create unclaimed chits
+  const chits = rlist.map((role, idx) => ({
+    id: idx,
+    role: role,
+    pickedBy: null
+  }));
+  
+  const nextRoundNum = (data.round || 1) + 1;
   const chat = data.chat || [];
-  chat.push({ sys:true, text:`━━ Round ${(data.round||1)+1} begins! ━━` });
-  chat.push({ sys:true, text:`Raja is searching for Rani... (roles: ${roles.join(' → ')})` });
+  chat.push({ sys: true, text: `━━ Round ${nextRoundNum} begins! Shuffling court chits... ━━` });
+  
   lastChatLen = 0;
-  await fbSet('rooms/'+myRoom, {
-    ...data, roles:roleMap,
-    stage:{ seekerId:rajaId, seeking:roles[1], foundIds:[], activeRoles:roles },
-    phase:'playing', round:(data.round||1)+1, chat
+  
+  // Set phase to shuffling and reset roles/stage
+  await fbSet('rooms/' + myRoom, {
+    ...data,
+    roles: {}, // Reset roles
+    chits: chits,
+    stage: { seekerId: null, seeking: null, foundIds: [], activeRoles: roles },
+    phase: 'shuffling',
+    round: nextRoundNum,
+    chat
   });
+  
+  // Wait 3.0s and transition to picking phase
+  setTimeout(async () => {
+    try {
+      const currentData = await fbGet('rooms/' + myRoom);
+      if (currentData && currentData.phase === 'shuffling' && currentData.round === nextRoundNum) {
+        currentData.phase = 'picking';
+        currentData.chat.push({ sys: true, text: `━━ Round ${nextRoundNum} chits scattered! Claim your role! ━━` });
+        await fbSet('rooms/' + myRoom, currentData);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, 3000);
 }
 
 // ─────────────────────────────────────────────
