@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { fbGet, fbSet, fbPatch, fbDelete } from '../firebase';
+import { fbGet, fbSet, fbPatch, fbDelete, fbTransaction } from '../firebase';
 
 export const ALL_ROLES = ['Raja', 'Rani', 'Mantri', 'Milkman', 'Postman', 'Guard', 'Police', 'Thief'];
 export const ROLE_DATA = {
@@ -285,30 +285,49 @@ export default function useRajaRaniGame() {
     
     try {
       setLobbyError('');
-      const data = await fbGet('rooms/' + code);
-      if (!data) { setLobbyError('Room not found!'); return; }
-      if (data.phase !== 'waiting') { setLobbyError('Game already started.'); return; }
       
-      const players = data.players || [];
-      if (players.length >= 8) { setLobbyError('Room is full (8/8).'); return; }
-      
-      // Add if not already joined
-      const existingIdx = players.findIndex(p => p.id === myId);
-      if (existingIdx === -1) {
-        const idx = players.length;
-        players.push({ id: myId, name: trimmedName, color: CLRS[idx], avatar: AVTR[idx], score: 0, history: [] });
-        const chat = data.chat || [];
-        chat.push({ sys: true, text: `${trimmedName} joined the court!` });
-        await fbPatch('rooms/' + code, { players, chat });
-      } else {
-        // Just update name/metadata if already present
-        players[existingIdx].name = trimmedName;
-        await fbPatch('rooms/' + code, { players });
+      const result = await fbTransaction('rooms/' + code, (data) => {
+        if (!data) return undefined;
+        if (data.phase !== 'waiting') return undefined;
+        
+        const players = [...(data.players || [])];
+        if (players.length >= 8) return undefined;
+        
+        const existingIdx = players.findIndex(p => p.id === myId);
+        const chat = [...(data.chat || [])];
+        
+        if (existingIdx === -1) {
+          const idx = players.length;
+          players.push({ id: myId, name: trimmedName, color: CLRS[idx], avatar: AVTR[idx], score: 0, history: [] });
+          chat.push({ sys: true, text: `${trimmedName} joined the court!` });
+        } else {
+          players[existingIdx] = { ...players[existingIdx], name: trimmedName };
+        }
+        
+        return {
+          ...data,
+          players,
+          chat
+        };
+      });
+
+      if (!result) {
+        const freshData = await fbGet('rooms/' + code);
+        if (!freshData) {
+          setLobbyError('Room not found!');
+        } else if (freshData.phase !== 'waiting') {
+          setLobbyError('Game already started.');
+        } else if ((freshData.players || []).length >= 8) {
+          setLobbyError('Room is full (8/8).');
+        } else {
+          setLobbyError('Failed to join room.');
+        }
+        return;
       }
       
       setMyName(trimmedName);
       setRoomCode(code);
-      setRoomData(data);
+      setRoomData(result);
     } catch (e) {
       setLobbyError('Connection failed.');
     }
@@ -322,75 +341,79 @@ export default function useRajaRaniGame() {
     
     if (!code) return;
     try {
-      const data = await fbGet('rooms/' + code);
-      if (data) {
+      await fbTransaction('rooms/' + code, (data) => {
+        if (!data) return undefined;
+        
         const players = (data.players || []).filter(p => p.id !== myId);
         if (players.length === 0) {
-          await fbDelete('rooms/' + code);
-        } else {
-          ensureHistory(players, data.round || 1);
-          const host = data.host === myId ? players[0].id : data.host;
-          const chat = data.chat || [];
-          chat.push({ sys: true, text: `${myName} left the court.` });
-
-          const leavingRole = data.roles?.[myId];
-          const roles = { ...(data.roles || {}) };
-          delete roles[myId];
-
-          let stage = data.stage || {};
-          if (data.phase === 'playing' && leavingRole) {
-            const oldChain = [...(stage.activeRoles || [])];
-            const newChain = oldChain.filter(r => r !== leavingRole);
-            stage.activeRoles = newChain;
-
-            if (stage.seekerId === myId) {
-              const nextRole = stage.seeking;
-              const nextSeekerId = Object.keys(roles).find(id => roles[id] === nextRole);
-
-              if (nextSeekerId) {
-                stage.seekerId = nextSeekerId;
-                const idx = newChain.indexOf(nextRole);
-                stage.seeking = (idx !== -1 && idx < newChain.length - 1) ? newChain[idx + 1] : null;
-
-                const nextPlayer = players.find(p => p.id === nextSeekerId);
-                chat.push({
-                  sys: true,
-                  text: `${nextPlayer?.name || 'Next player'} (${nextRole}) continues the search.`
-                });
-              } else {
-                stage.seeking = null;
-              }
-            } else {
-              if (stage.seeking === leavingRole) {
-                const idx = oldChain.indexOf(leavingRole);
-                stage.seeking = (idx !== -1 && idx < oldChain.length - 1) ? oldChain[idx + 1] : null;
-              }
-            }
-
-            chat.push({ sys: true, text: `${leavingRole} left the court. The chain has been updated.` });
-            chat.push({ sys: true, text: `Current Chain: ${newChain.join(' ➔ ')}` });
-
-            if (!stage.seeking || newChain.length <= 1) {
-              data.phase = 'reveal';
-              chat.push({ sys: true, text: `🏆 Round complete! All roles have been revealed.` });
-            }
-          }
-
-          if (players.length < 2) {
-            data.phase = 'waiting';
-            chat.push({ sys: true, text: `Not enough players. Returning to waiting room.` });
-          }
-
-          await fbPatch('rooms/' + code, {
-            players,
-            host,
-            chat,
-            stage,
-            roles,
-            phase: data.phase
-          });
+          return null;
         }
-      }
+        
+        ensureHistory(players, data.round || 1);
+        const host = data.host === myId ? players[0].id : data.host;
+        const chat = [...(data.chat || [])];
+        chat.push({ sys: true, text: `${myName} left the court.` });
+
+        const leavingRole = data.roles?.[myId];
+        const roles = { ...(data.roles || {}) };
+        delete roles[myId];
+
+        let stage = { ...(data.stage || {}) };
+        let phase = data.phase;
+        
+        if (phase === 'playing' && leavingRole) {
+          const oldChain = [...(stage.activeRoles || [])];
+          const newChain = oldChain.filter(r => r !== leavingRole);
+          stage.activeRoles = newChain;
+
+          if (stage.seekerId === myId) {
+            const nextRole = stage.seeking;
+            const nextSeekerId = Object.keys(roles).find(id => roles[id] === nextRole);
+
+            if (nextSeekerId) {
+              stage.seekerId = nextSeekerId;
+              const idx = newChain.indexOf(nextRole);
+              stage.seeking = (idx !== -1 && idx < newChain.length - 1) ? newChain[idx + 1] : null;
+
+              const nextPlayer = players.find(p => p.id === nextSeekerId);
+              chat.push({
+                sys: true,
+                text: `${nextPlayer?.name || 'Next player'} (${nextRole}) continues the search.`
+              });
+            } else {
+              stage.seeking = null;
+            }
+          } else {
+            if (stage.seeking === leavingRole) {
+              const idx = oldChain.indexOf(leavingRole);
+              stage.seeking = (idx !== -1 && idx < oldChain.length - 1) ? oldChain[idx + 1] : null;
+            }
+          }
+
+          chat.push({ sys: true, text: `${leavingRole} left the court. The chain has been updated.` });
+          chat.push({ sys: true, text: `Current Chain: ${newChain.join(' ➔ ')}` });
+
+          if (!stage.seeking || newChain.length <= 1) {
+            phase = 'reveal';
+            chat.push({ sys: true, text: `🏆 Round complete! All roles have been revealed.` });
+          }
+        }
+
+        if (players.length < 2) {
+          phase = 'waiting';
+          chat.push({ sys: true, text: `Not enough players. Returning to waiting room.` });
+        }
+
+        return {
+          ...data,
+          players,
+          host,
+          chat,
+          stage,
+          roles,
+          phase
+        };
+      });
     } catch (e) {
       console.error(e);
     }
@@ -398,46 +421,73 @@ export default function useRajaRaniGame() {
 
   const startGame = async () => {
     if (!roomData || roomData.host !== myId) return;
-    const players = roomData.players || [];
-    const n = players.length;
-    const roles = activeRoles(n);
     
-    const rlist = [...roles];
-    for (let i = rlist.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [rlist[i], rlist[j]] = [rlist[j], rlist[i]];
-    }
-    
-    const chits = rlist.map((role, idx) => ({
-      id: idx,
-      role: role,
-      pickedBy: null
-    }));
-    
-    const chat = roomData.chat || [];
-    chat.push({ sys: true, text: '━━ Shuffling court chits... ━━' });
-    
-    await fbSet('rooms/' + roomCode, {
-      ...roomData,
-      roles: {},
-      chits,
-      stage: { seekerId: null, seeking: null, foundIds: [], activeRoles: roles },
-      phase: 'shuffling',
-      chat
-    });
-    
-    setTimeout(async () => {
-      try {
-        const currentData = await fbGet('rooms/' + roomCode);
-        if (currentData && currentData.phase === 'shuffling') {
-          currentData.phase = 'picking';
-          currentData.chat.push({ sys: true, text: '━━ Chits scattered! Claim your role! ━━' });
-          await fbSet('rooms/' + roomCode, currentData);
+    try {
+      await fbTransaction('rooms/' + roomCode, (data) => {
+        if (!data || data.host !== myId) return undefined;
+        
+        // For game start, make sure to reset lastRole
+        const players = (data.players || []).map(p => ({
+          ...p,
+          lastRole: null
+        }));
+        const n = players.length;
+        const roles = activeRoles(n);
+        
+        const rlist = [...roles];
+        for (let i = rlist.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [rlist[i], rlist[j]] = [rlist[j], rlist[i]];
         }
-      } catch (e) {
-        console.error(e);
-      }
-    }, 3000);
+        
+        const posIndices = Array.from({ length: roles.length }, (_, i) => i);
+        for (let i = posIndices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [posIndices[i], posIndices[j]] = [posIndices[j], posIndices[i]];
+        }
+        
+        const chits = rlist.map((role, idx) => ({
+          id: idx,
+          role: role,
+          posIdx: posIndices[idx],
+          pickedBy: null
+        }));
+        
+        const chat = [...(data.chat || [])];
+        chat.push({ sys: true, text: '━━ Shuffling court chits... ━━' });
+        
+        return {
+          ...data,
+          players,
+          roles: {},
+          chits,
+          stage: { seekerId: null, seeking: null, foundIds: [], activeRoles: roles },
+          phase: 'shuffling',
+          chat
+        };
+      });
+      
+      setTimeout(async () => {
+        try {
+          await fbTransaction('rooms/' + roomCode, (currentData) => {
+            if (currentData && currentData.phase === 'shuffling') {
+              const chat = [...(currentData.chat || [])];
+              chat.push({ sys: true, text: '━━ Chits scattered! Claim your role! ━━' });
+              return {
+                ...currentData,
+                phase: 'picking',
+                chat
+              };
+            }
+            return undefined;
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }, 3000);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const claimChit = async (cId) => {
@@ -446,48 +496,69 @@ export default function useRajaRaniGame() {
     setTimeout(() => { setIsPickLocked(false); }, 1000);
 
     try {
-      const data = await fbGet('rooms/' + roomCode);
-      if (!data || (data.phase !== 'picking' && data.phase !== 'shuffling')) return;
-      
-      const chits = data.chits || [];
-      const roles = data.roles || {};
-      
-      if (chits[cId].pickedBy) {
-        showNotification('Someone else claimed this chit! Try another one.');
-        return;
-      }
-      
-      chits[cId].pickedBy = myId;
-      roles[myId] = chits[cId].role;
-      
-      const players = data.players || [];
-      const allPicked = chits.every(c => !!c.pickedBy);
-      
-      let nextPhase = 'picking';
-      let stage = data.stage || {};
-      
-      if (allPicked) {
-        nextPhase = 'playing';
-        const rajaId = Object.keys(roles).find(id => roles[id] === 'Raja');
-        const activeR = activeRoles(players.length);
-        stage = {
-          seekerId: rajaId,
-          seeking: activeR[1],
-          foundIds: [],
-          activeRoles: activeR
-        };
+      const result = await fbTransaction('rooms/' + roomCode, (data) => {
+        if (!data || (data.phase !== 'picking' && data.phase !== 'shuffling')) return undefined;
         
-        data.chat.push({ sys: true, text: '━━ All chits claimed! The game begins! ━━' });
-        data.chat.push({ sys: true, text: 'Raja is searching for Rani...' });
-      }
-      
-      await fbSet('rooms/' + roomCode, {
-        ...data,
-        roles,
-        chits,
-        phase: nextPhase,
-        stage
+        const chits = [...(data.chits || [])];
+        const roles = { ...(data.roles || {}) };
+        
+        if (chits[cId].pickedBy) {
+          return undefined; // Already claimed
+        }
+        
+        const players = data.players || [];
+        const mePlayer = players.find(p => p.id === myId);
+        const lastRole = mePlayer?.lastRole;
+        let assignedRole = chits[cId].role;
+        
+        // Prevent consecutive role duplication by swapping with another unclaimed chit if possible
+        if (lastRole && assignedRole === lastRole) {
+          const swapIdx = chits.findIndex((c, idx) => idx !== cId && !c.pickedBy && c.role !== lastRole);
+          if (swapIdx !== -1) {
+            const temp = chits[cId].role;
+            chits[cId].role = chits[swapIdx].role;
+            chits[swapIdx].role = temp;
+            assignedRole = chits[cId].role;
+          }
+        }
+        
+        chits[cId] = { ...chits[cId], pickedBy: myId };
+        roles[myId] = assignedRole;
+        
+        const allPicked = chits.every(c => !!c.pickedBy);
+        
+        let nextPhase = data.phase;
+        let stage = data.stage || {};
+        const chat = [...(data.chat || [])];
+        
+        if (allPicked) {
+          nextPhase = 'playing';
+          const rajaId = Object.keys(roles).find(id => roles[id] === 'Raja');
+          const activeR = activeRoles(players.length);
+          stage = {
+            seekerId: rajaId,
+            seeking: activeR[1],
+            foundIds: [],
+            activeRoles: activeR
+          };
+          
+          chat.push({ sys: true, text: '━━ All chits claimed! The game begins! ━━' });
+          chat.push({ sys: true, text: 'Raja is searching for Rani...' });
+        }
+        
+        return {
+          ...data,
+          roles,
+          chits,
+          phase: nextPhase,
+          stage,
+          chat
+        };
       });
+
+      if (result && result.chits?.[cId]?.pickedBy !== myId) {
+        showNotification('Someone else claimed this chit! Try another one.');
+      }
     } catch (e) {
       console.error(e);
     }
@@ -499,64 +570,71 @@ export default function useRajaRaniGame() {
     setTimeout(() => { setIsPickLocked(false); }, 1500);
 
     try {
-      const data = await fbGet('rooms/' + roomCode);
-      if (!data || data.phase !== 'playing') return;
-      const stage = data.stage || {};
-      if (stage.seekerId !== myId) return;
+      await fbTransaction('rooms/' + roomCode, (data) => {
+        if (!data || data.phase !== 'playing') return undefined;
+        const stage = data.stage || {};
+        if (stage.seekerId !== myId) return undefined;
 
-      const players    = data.players || [];
-      const roleMap    = data.roles   || {};
-      const chat       = data.chat    || [];
-      const foundIds   = [...(stage.foundIds || [])];
-      const roles      = stage.activeRoles || activeRoles(players.length);
+        const players    = [...(data.players || [])];
+        const roleMap    = { ...(data.roles || {}) };
+        const chat       = [...(data.chat || [])];
+        const foundIds   = [...(stage.foundIds || [])];
+        const roles      = stage.activeRoles || activeRoles(players.length);
 
-      const me         = players.find(p => p.id === myId);
-      const target     = players.find(p => p.id === targetId);
-      const targetRole = roleMap[targetId];
-      const myRoleNow  = roleMap[myId];
-      const seeking    = stage.seeking;
+        const me         = players.find(p => p.id === myId);
+        const target     = players.find(p => p.id === targetId);
+        const targetRole = roleMap[targetId];
+        const myRoleNow  = roleMap[myId];
+        const seeking    = stage.seeking;
 
-      if (targetRole === seeking) {
-        const seekerPoints = ROLE_DATA[myRoleNow].pts;
-        const meP = players.find(p => p.id === myId);
-        if (meP) {
-          meP.score += seekerPoints;
-          if (!meP.history) meP.history = [];
-          const rIdx = (data.round || 1) - 1;
-          meP.history[rIdx] = (meP.history[rIdx] || 0) + seekerPoints;
-        }
+        if (targetRole === seeking) {
+          const seekerPoints = ROLE_DATA[myRoleNow].pts;
+          const meP = players.find(p => p.id === myId);
+          if (meP) {
+            meP.score += seekerPoints;
+            if (!meP.history) meP.history = [];
+            const rIdx = (data.round || 1) - 1;
+            meP.history[rIdx] = (meP.history[rIdx] || 0) + seekerPoints;
+          }
 
-        chat.push({ sys: true, text: `✓ ${me.name} (${myRoleNow}) correctly found ${target.name} (${seeking}) — +${seekerPoints} pts!` });
-        foundIds.push(myId);
+          chat.push({ sys: true, text: `✓ ${me.name} (${myRoleNow}) correctly found ${target.name} (${seeking}) — +${seekerPoints} pts!` });
+          foundIds.push(myId);
 
-        if (isLastRole(roles, seeking)) {
-          chat.push({ sys: true, text: `🏆 Round complete! All roles have been revealed.` });
-          ensureHistory(players, data.round || 1);
-          await fbSet('rooms/' + roomCode, { ...data, players, roles: roleMap, chat, stage: { ...stage, foundIds }, phase: 'reveal' });
-        } else {
-          const nextSeeking = roleSeeks(roles, seeking);
-          chat.push({ sys: true, text: `${target.name} (${seeking}) now seeks the ${nextSeeking}...` });
-          await fbSet('rooms/' + roomCode, {
+          let nextPhase = 'playing';
+          let newStage = { ...stage, foundIds };
+
+          if (isLastRole(roles, seeking)) {
+            chat.push({ sys: true, text: `🏆 Round complete! All roles have been revealed.` });
+            ensureHistory(players, data.round || 1);
+            nextPhase = 'reveal';
+          } else {
+            const nextSeeking = roleSeeks(roles, seeking);
+            chat.push({ sys: true, text: `${target.name} (${seeking}) now seeks the ${nextSeeking}...` });
+            newStage = { ...stage, seekerId: targetId, seeking: nextSeeking, foundIds, activeRoles: roles };
+          }
+
+          return {
             ...data,
             players,
             roles: roleMap,
             chat,
-            stage: { ...stage, seekerId: targetId, seeking: nextSeeking, foundIds, activeRoles: roles }
-          });
+            stage: newStage,
+            phase: nextPhase
+          };
+        } else {
+          chat.push({ sys: true, text: `✗ Wrong! ${me.name} guessed ${target.name}. Roles swapped!` });
+          roleMap[myId]     = targetRole;
+          roleMap[targetId] = myRoleNow;
+          chat.push({ sys: true, text: `${target.name} (now ${myRoleNow}) continues searching for ${seeking}...` });
+          return {
+            ...data,
+            players,
+            roles: roleMap,
+            chat,
+            stage: { ...stage, seekerId: targetId, seeking, foundIds, activeRoles: roles }
+          };
         }
-      } else {
-        chat.push({ sys: true, text: `✗ Wrong! ${me.name} guessed ${target.name}. Roles swapped!` });
-        roleMap[myId]     = targetRole;
-        roleMap[targetId] = myRoleNow;
-        chat.push({ sys: true, text: `${target.name} (now ${myRoleNow}) continues searching for ${seeking}...` });
-        await fbSet('rooms/' + roomCode, {
-          ...data,
-          players,
-          roles: roleMap,
-          chat,
-          stage: { ...stage, seekerId: targetId, seeking, foundIds, activeRoles: roles }
-        });
-      }
+      });
     } catch (e) {
       console.error(e);
     }
@@ -567,60 +645,93 @@ export default function useRajaRaniGame() {
     if (!txt || !roomCode) return;
     setChatInput('');
     try {
-      const data = await fbGet('rooms/' + roomCode);
-      if (!data) return;
-      const me = (data.players || []).find(p => p.id === myId);
-      if (!me) return;
-      const chat = data.chat || [];
-      chat.push({ name: me.name, color: me.color, text: ': ' + txt });
-      await fbPatch('rooms/' + roomCode, { chat });
+      await fbTransaction('rooms/' + roomCode, (data) => {
+        if (!data) return undefined;
+        const me = (data.players || []).find(p => p.id === myId);
+        if (!me) return undefined;
+        const chat = [...(data.chat || [])];
+        chat.push({ name: me.name, color: me.color, text: ': ' + txt });
+        return {
+          ...data,
+          chat
+        };
+      });
     } catch (e) {}
   };
 
   const triggerNextRound = async () => {
     if (!roomData || roomData.host !== myId) return;
-    const players = roomData.players || [];
-    const n = players.length;
-    const roles = activeRoles(n);
     
-    const rlist = [...roles];
-    for (let i = rlist.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [rlist[i], rlist[j]] = [rlist[j], rlist[i]];
-    }
-    
-    const chits = rlist.map((role, idx) => ({
-      id: idx,
-      role: role,
-      pickedBy: null
-    }));
-    
-    const nextRoundNum = (roomData.round || 1) + 1;
-    const chat = roomData.chat || [];
-    chat.push({ sys: true, text: `━━ Round ${nextRoundNum} begins! Shuffling court chits... ━━` });
-    
-    await fbSet('rooms/' + roomCode, {
-      ...roomData,
-      roles: {},
-      chits,
-      stage: { seekerId: null, seeking: null, foundIds: [], activeRoles: roles },
-      phase: 'shuffling',
-      round: nextRoundNum,
-      chat
-    });
-    
-    setTimeout(async () => {
-      try {
-        const currentData = await fbGet('rooms/' + roomCode);
-        if (currentData && currentData.phase === 'shuffling' && currentData.round === nextRoundNum) {
-          currentData.phase = 'picking';
-          currentData.chat.push({ sys: true, text: `━━ Round ${nextRoundNum} chits scattered! Claim your role! ━━` });
-          await fbSet('rooms/' + roomCode, currentData);
+    try {
+      const nextRoundNum = (roomData.round || 1) + 1;
+      
+      await fbTransaction('rooms/' + roomCode, (data) => {
+        if (!data || data.host !== myId) return undefined;
+        
+        // Save current roles as lastRole on player objects to prevent consecutive repetition
+        const players = (data.players || []).map(p => ({
+          ...p,
+          lastRole: data.roles?.[p.id] || null
+        }));
+        
+        const n = players.length;
+        const roles = activeRoles(n);
+        
+        const rlist = [...roles];
+        for (let i = rlist.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [rlist[i], rlist[j]] = [rlist[j], rlist[i]];
         }
-      } catch (e) {
-        console.error(e);
-      }
-    }, 3000);
+        
+        const posIndices = Array.from({ length: roles.length }, (_, i) => i);
+        for (let i = posIndices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [posIndices[i], posIndices[j]] = [posIndices[j], posIndices[i]];
+        }
+        
+        const chits = rlist.map((role, idx) => ({
+          id: idx,
+          role: role,
+          posIdx: posIndices[idx],
+          pickedBy: null
+        }));
+        
+        const chat = [...(data.chat || [])];
+        chat.push({ sys: true, text: `━━ Round ${nextRoundNum} begins! Shuffling court chits... ━━` });
+        
+        return {
+          ...data,
+          players,
+          roles: {},
+          chits,
+          stage: { seekerId: null, seeking: null, foundIds: [], activeRoles: roles },
+          phase: 'shuffling',
+          round: nextRoundNum,
+          chat
+        };
+      });
+      
+      setTimeout(async () => {
+        try {
+          await fbTransaction('rooms/' + roomCode, (currentData) => {
+            if (currentData && currentData.phase === 'shuffling' && currentData.round === nextRoundNum) {
+              const chat = [...(currentData.chat || [])];
+              chat.push({ sys: true, text: `━━ Round ${nextRoundNum} chits scattered! Claim your role! ━━` });
+              return {
+                ...currentData,
+                phase: 'picking',
+                chat
+              };
+            }
+            return undefined;
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }, 3000);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return {

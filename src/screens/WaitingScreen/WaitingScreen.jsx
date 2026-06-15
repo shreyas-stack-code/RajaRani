@@ -203,7 +203,8 @@ export default function WaitingScreen({
               <div className="scattered-chits-container" style={{ marginTop: 0 }}>
                 <div className="scattered-chits" id="waiting-scattered-chits">
                   {(roomData.chits || []).map((c, idx) => {
-                    const pos = SCATTERED_CHIT_POSITIONS[idx % SCATTERED_CHIT_POSITIONS.length];
+                    const posIndex = c.posIdx !== undefined ? c.posIdx : idx;
+                    const pos = SCATTERED_CHIT_POSITIONS[posIndex % SCATTERED_CHIT_POSITIONS.length];
                     if (c.pickedBy) return null; // Hide claimed chits
                     
                     return (
@@ -241,7 +242,8 @@ export default function WaitingScreen({
               <div className="scattered-chits-container">
                 <div className="scattered-chits">
                   {(roomData.chits || []).map((c, idx) => {
-                    const pos = SCATTERED_CHIT_POSITIONS[idx % SCATTERED_CHIT_POSITIONS.length];
+                    const posIndex = c.posIdx !== undefined ? c.posIdx : idx;
+                    const pos = SCATTERED_CHIT_POSITIONS[posIndex % SCATTERED_CHIT_POSITIONS.length];
                     const bowlPos = BOWL_CHIT_POSITIONS[idx % BOWL_CHIT_POSITIONS.length] || { x: 65, y: 70, rot: 0 };
                     const offsetX = bowlPos.x - 80;
                     const offsetY = bowlPos.y;
