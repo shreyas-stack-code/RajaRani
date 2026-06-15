@@ -1,0 +1,512 @@
+import React from 'react';
+
+export default function BackgroundDoodles() {
+  return (
+    <div className="bg-doodles" aria-hidden="true">
+      {/* Column 1 (Far Left Margin) */}
+      <div className="doodle d-crown">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 20 70 Q 50 68 80 70" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 22 73 Q 50 71 78 73" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 22 70 L 26 40 L 40 55 L 50 32 L 60 55 L 74 40 L 78 70" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 21 69 L 27 42 L 39 53 L 50 35 L 61 53 L 73 42 L 77 69" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+          <circle cx="50" cy="32" r="3.2" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="26" cy="40" r="2.8" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="74" cy="40" r="2.8" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 28 70 L 32 60 M 38 70 L 42 60 M 48 70 L 52 60 M 58 70 L 62 60 M 68 70 L 72 60" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+        </svg>
+      </div>
+      <div className="doodle d-sparkle">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 2 Q 12 12 2 12 Q 12 12 12 22 Q 12 12 22 12 Q 12 12 12 2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-shield">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 20 L 40 15 L 65 20 C 65 45 55 65 40 73 C 25 65 15 45 15 20 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 18 22 L 40 17.5 L 62 22 C 62 43 53 61 40 68.5 C 27 61 18 43 18 22 Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round" opacity="0.6"/>
+          <path d="M 40 20 L 40 65 M 23 35 H 57" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-coin">
+        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="15" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="15" cy="15" r="8" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2,2" fill="none"/>
+          <text x="11" y="19" font-family="sans-serif" font-size="12" font-weight="bold" fill="currentColor">$</text>
+        </svg>
+      </div>
+      <div className="doodle d-postbox">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 35 40 A 15 15 0 0 1 65 40" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 35 40 L 35 75 L 65 75 L 65 40" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 37 38 L 37 73 M 63 38 L 63 73" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <rect x="42" y="46" width="16" height="5" rx="1.5" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 44 48 L 56 48" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+          <rect x="40" y="58" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <circle cx="45" cy="65" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 45 32 H 55" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M 38 75 L 38 85 L 62 85 L 62 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <g transform="translate(62, 22) rotate(15) scale(0.7)">
+            <rect x="0" y="0" width="22" height="14" rx="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 0 0 L 11 8 L 22 0" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-milk">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 35 38 L 50 24 L 65 38 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <path d="M 50 24 L 50 38" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 35 38 L 35 80 L 65 80 L 65 38" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 37 40 L 37 78 L 63 78 L 63 40" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <rect x="40" y="48" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 50 52 C 48 55 46 55 46 58 C 46 60 48 62 50 62 C 52 62 54 60 54 58 C 54 55 52 55 50 52 Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+          <path d="M 42 69 Q 50 71 58 69" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 39 34 L 47 34 M 53 30 L 61 34" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+        </svg>
+      </div>
+
+      {/* Column 2 (Inner Left 1) */}
+      <div className="doodle d-check">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 10 20 L 18 28 L 30 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-envelope">
+        <svg viewBox="0 0 50 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="8" width="40" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 5 8 L 25 22 L 45 8" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <div className="doodle d-star1">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2 L14.5 8.5 L21.5 9 L16.5 13.5 L18 20.5 L12 17 L6 20.5 L7.5 13.5 L2.5 9 L9.5 8.5 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-footprints">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(15, 45) rotate(-20) scale(0.8)">
+            <path d="M 12 15 C 8 20 8 30 14 36 C 20 40 26 38 24 30 C 22 24 20 18 17 14 C 15 12 13 12 12 15 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="7" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="16" cy="6" r="1.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </g>
+          <g transform="translate(38, 20) rotate(-10) scale(0.8)">
+            <path d="M 12 15 C 8 20 8 30 14 36 C 20 40 26 38 24 30 C 22 24 20 18 17 14 C 15 12 13 12 12 15 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="7" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="16" cy="6" r="1.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-police-2">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 40 12 L 62 20 L 58 55 L 40 70 L 22 55 L 18 20 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <path d="M 40 15 L 59 22 L 55 52 L 40 66 L 25 52 L 21 22 Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round" opacity="0.5"/>
+          <path d="M 40 28 L 44 38 L 54 38 L 46 44 L 49 54 L 40 48 L 31 54 L 34 44 L 26 38 L 36 38 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-thief-2">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 35 40 Q 50 25 65 40" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 30 45 Q 50 50 70 45" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <circle cx="42" cy="45" r="1.8" fill="#e2dfd5" />
+          <circle cx="58" cy="45" r="1.8" fill="#e2dfd5" />
+          <path d="M 50 49 Q 52 54 48 56" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 44 60 Q 50 63 56 59" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M 25 75 C 25 75 35 60 50 64 C 65 68 70 75 70 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 68 72 C 85 70 95 80 92 95 C 89 106 72 108 60 100 C 50 93 55 80 68 72 Z" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+          <path d="M 62 72 C 60 68 55 68 57 73 C 58 75 62 76 62 76" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 73 84 Q 78 82 76 86 T 74 91 Q 79 93 75 95" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          <path d="M 75 80 L 74 97" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 45 68 Q 58 74 60 74" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+
+      {/* Column 3 (Inner Left 2) */}
+      <div className="doodle d-guilty">
+        <svg viewBox="0 0 90 40" xmlns="http://www.w3.org/2000/svg">
+          <text x="8" y="28" font-family="'Caveat', cursive" font-size="26" font-weight="700" fill="currentColor" transform="rotate(-5)" letter-spacing="1">GUILTY!</text>
+          <rect x="4" y="4" width="82" height="30" rx="2" stroke="currentColor" stroke-width="1.8" fill="none" transform="rotate(-5)" opacity="0.7"/>
+        </svg>
+      </div>
+      <div className="doodle d-dots">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="5" cy="15" r="1.5" fill="currentColor"/>
+          <circle cx="10" cy="8" r="1.5" fill="currentColor"/>
+          <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div className="doodle d-scroll">
+        <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 20 25 C 20 20, 35 20, 35 25 C 35 30, 20 30, 20 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 20 25 L 20 65 C 20 70, 35 70, 35 65 L 35 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 35 25 L 65 25 C 65 20, 80 20, 80 25 C 80 30, 65 30, 65 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 65 25 L 65 65 C 65 70, 80 70, 80 65 L 80 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 30 28 L 70 28 M 30 63 L 70 63" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 28 25 L 28 65 M 72 25 L 72 65" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+          <path d="M 35 38 H 65 M 35 45 H 60 M 35 52 H 63" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          <g transform="translate(48, 20) rotate(-35)">
+            <path d="M 5 50 Q 15 25 3 0 Q 25 15 10 55" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M 5 50 L 2 58 L 8 54" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+            <path d="M 8 32 L 15 28 M 7 24 L 13 21" stroke="currentColor" stroke-width="1.2" opacity="0.7"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-exclamation">
+        <svg viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 8 L 15 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="15" cy="32" r="2" fill="currentColor"/>
+        </svg>
+      </div>
+      <div className="doodle d-tiara-2">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 75 Q 50 55 85 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 18 78 Q 50 59 82 78" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.5"/>
+          <path d="M 50 45 C 47 38 41 38 41 45 C 41 52 50 60 50 60 C 50 60 59 52 59 45 C 59 38 53 38 50 45 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M 25 70 Q 35 48 45 60" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 75 70 Q 65 48 55 60" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 18 73 Q 28 58 35 68" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M 82 73 Q 72 58 65 68" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <circle cx="50" cy="38" r="2.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="37" cy="50" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="63" cy="50" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 50 30 L 50 24 M 47 27 L 53 27" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-shield-mini">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 20 L 40 15 L 65 20 C 65 45 55 65 40 73 C 25 65 15 45 15 20 Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+          <path d="M 40 20 L 40 65 M 23 35 H 57" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      {/* Column 4 (Inner Left 3) */}
+      <div className="doodle d-star-3">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2 L14.5 8.5 L21.5 9 L16.5 13.5 L18 20.5 L12 17 L6 20.5 L7.5 13.5 L2.5 9 L9.5 8.5 Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-police">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 40 12 L 62 20 L 58 55 L 40 70 L 22 55 L 18 20 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <path d="M 40 15 L 59 22 L 55 52 L 40 66 L 25 52 L 21 22 Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round" opacity="0.5"/>
+          <path d="M 40 28 L 44 38 L 54 38 L 46 44 L 49 54 L 40 48 L 31 54 L 34 44 L 26 38 L 36 38 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-loop">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 8 20 C 18 8, 28 8, 28 20 C 28 32, 18 32, 18 20 C 18 8, 32 8, 32 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-wanted-2">
+        <svg viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="96" height="34" rx="3" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
+          <text x="12" y="26" font-family="'Outfit', sans-serif" font-size="18" font-weight="700" fill="currentColor" letter-spacing="3">WANTED</text>
+        </svg>
+      </div>
+      <div className="doodle d-money-2">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(15, 30) rotate(-15)">
+            <rect x="0" y="0" width="45" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <circle cx="22" cy="12" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 6 4 L 10 4 M 39 4 L 35 4 M 6 20 L 10 20 M 39 20 L 35 20" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          </g>
+          <circle cx="28" cy="72" r="7" stroke="currentColor" stroke-width="2.2" fill="none"/>
+        </svg>
+      </div>
+      <div className="doodle d-crown-mini-2">
+        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 45 L 15 25 L 24 35 L 30 20 L 36 35 L 45 25 L 48 45 Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+          <path d="M 10 45 Q 30 43 50 45" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      {/* Column 5 (Center Verticals) */}
+      <div className="doodle d-crown-2">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 20 70 Q 50 68 80 70" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M 22 70 L 26 40 L 40 55 L 50 32 L 60 55 L 74 40 L 78 70" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="50" cy="32" r="2.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+        </svg>
+      </div>
+      <div className="doodle d-star2">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2 L14.5 8.5 L21.5 9 L16.5 13.5 L18 20.5 L12 17 L6 20.5 L7.5 13.5 L2.5 9 L9.5 8.5 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.7"/>
+        </svg>
+      </div>
+      <div className="doodle d-shield-2">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 20 L 40 15 L 65 20 C 65 45 55 65 40 73 C 25 65 15 45 15 20 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 18 22 L 40 17.5 L 62 22 C 62 43 53 61 40 68.5 C 27 61 18 43 18 22 Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round" opacity="0.6"/>
+          <path d="M 40 20 L 40 65 M 23 35 H 57" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-swirl-2">
+        <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 10 25 Q 20 10 30 20 T 25 35 T 18 25 T 28 15 T 40 30" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-postbox-2">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 35 40 A 15 15 0 0 1 65 40" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 35 40 L 35 75 L 65 75 L 65 40" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 37 38 L 37 73 M 63 38 L 63 73" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <rect x="42" y="46" width="16" height="5" rx="1.5" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 44 48 L 56 48" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+          <rect x="40" y="58" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <circle cx="45" cy="65" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 45 32 H 55" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M 38 75 L 38 85 L 62 85 L 62 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <g transform="translate(62, 22) rotate(15) scale(0.7)">
+            <rect x="0" y="0" width="22" height="14" rx="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 0 0 L 11 8 L 22 0" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-milk-2">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 35 38 L 50 24 L 65 38 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <path d="M 50 24 L 50 38" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 35 38 L 35 80 L 65 80 L 65 38" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 37 40 L 37 78 L 63 78 L 63 40" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <rect x="40" y="48" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 50 52 C 48 55 46 55 46 58 C 46 60 48 62 50 62 C 52 62 54 60 54 58 C 54 55 52 55 50 52 Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+          <path d="M 42 69 Q 50 71 58 69" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 39 34 L 47 34 M 53 30 L 61 34" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+        </svg>
+      </div>
+
+      {/* Column 6 (Inner Right 3) */}
+      <div className="doodle d-arrow-3">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 6 34 Q 25 31 29 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M 21 13 L 29 11 L 31 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-wanted">
+        <svg viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="96" height="34" rx="3" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
+          <text x="12" y="26" font-family="'Outfit', sans-serif" font-size="18" font-weight="700" fill="currentColor" letter-spacing="3">WANTED</text>
+        </svg>
+      </div>
+      <div className="doodle d-coin-2">
+        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="15" r="10" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 12 15 H 18 M 15 12 V 18" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div className="doodle d-envelope-2">
+        <svg viewBox="0 0 50 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="8" width="40" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 5 8 L 25 22 L 45 8" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <div className="doodle d-footprints-2">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(15, 45) rotate(-20) scale(0.8)">
+            <path d="M 12 15 C 8 20 8 30 14 36 C 20 40 26 38 24 30 C 22 24 20 18 17 14 C 15 12 13 12 12 15 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="7" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="16" cy="6" r="1.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </g>
+          <g transform="translate(38, 20) rotate(-10) scale(0.8)">
+            <path d="M 12 15 C 8 20 8 30 14 36 C 20 40 26 38 24 30 C 22 24 20 18 17 14 C 15 12 13 12 12 15 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="7" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="16" cy="6" r="1.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-shield-mini-2">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 20 L 40 15 L 65 20 C 65 45 55 65 40 73 C 25 65 15 45 15 20 Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+          <path d="M 40 20 L 40 65 M 23 35 H 57" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      {/* Column 7 (Inner Right 2) */}
+      <div className="doodle d-guilty-2">
+        <svg viewBox="0 0 90 40" xmlns="http://www.w3.org/2000/svg">
+          <text x="8" y="28" font-family="'Caveat', cursive" font-size="26" font-weight="700" fill="currentColor" transform="rotate(-5)" letter-spacing="1">GUILTY!</text>
+          <rect x="4" y="4" width="82" height="30" rx="2" stroke="currentColor" stroke-width="1.8" fill="none" transform="rotate(-5)" opacity="0.7"/>
+        </svg>
+      </div>
+      <div className="doodle d-heart">
+        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 24 C 15 24 5 17 5 11 C 5 7 8 4 12 4 C 14.5 4 15 6 15 6 C 15 6 15.5 4 18 4 C 22 4 25 7 25 11 C 25 17 15 24 15 24 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-scroll-2">
+        <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 20 25 C 20 20, 35 20, 35 25 C 35 30, 20 30, 20 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 20 25 L 20 65 C 20 70, 35 70, 35 65 L 35 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 35 25 L 65 25 C 65 20, 80 20, 80 25 C 80 30, 65 30, 65 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 65 25 L 65 65 C 65 70, 80 70, 80 65 L 80 25" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 30 28 L 70 28 M 30 63 L 70 63" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 28 25 L 28 65 M 72 25 L 72 65" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+          <path d="M 35 38 H 65 M 35 45 H 60 M 35 52 H 63" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          <g transform="translate(48, 20) rotate(-35)">
+            <path d="M 5 50 Q 15 25 3 0 Q 25 15 10 55" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M 5 50 L 2 58 L 8 54" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+            <path d="M 8 32 L 15 28 M 7 24 L 13 21" stroke="currentColor" stroke-width="1.2" opacity="0.7"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-star-4">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2 L14.5 8.5 L21.5 9 L16.5 13.5 L18 20.5 L12 17 L6 20.5 L7.5 13.5 L2.5 9 L9.5 8.5 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/>
+        </svg>
+      </div>
+      <div className="doodle d-dagger-2">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(40, 40) rotate(45) translate(-40, -40)">
+            <path d="M 37 15 L 43 15 L 43 55 L 40 62 L 37 55 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+            <path d="M 40 15 L 40 55" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+            <path d="M 28 55 H 52" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="28" cy="55" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="52" cy="55" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 38 55 L 38 70 L 42 70 L 42 55" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="40" cy="72" r="2.5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-crown-mini">
+        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 12 45 L 15 25 L 24 35 L 30 20 L 36 35 L 45 25 L 48 45 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M 10 45 Q 30 43 50 45" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="30" cy="20" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+
+      {/* Column 8 (Inner Right 1) */}
+      <div className="doodle d-arrow">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 6 34 Q 25 31 29 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M 21 13 L 29 11 L 31 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-money">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(15, 30) rotate(-15)">
+            <rect x="0" y="0" width="45" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <circle cx="22" cy="12" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 6 4 L 10 4 M 39 4 L 35 4 M 6 20 L 10 20 M 39 20 L 35 20" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          </g>
+          <g transform="translate(38, 45) rotate(20)">
+            <rect x="0" y="0" width="45" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="22" cy="12" r="3.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M 5 5 L 8 5 M 40 5 L 37 5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          </g>
+          <circle cx="28" cy="72" r="7" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          <circle cx="28" cy="72" r="4.5" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <circle cx="72" cy="35" r="5.5" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 68 62 Q 78 60 85 64" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 65 70 Q 73 69 78 72" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+      </div>
+      <div className="doodle d-swirl">
+        <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 10 25 Q 20 10 30 20 T 25 35 T 18 25 T 28 15 T 40 30" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-thief">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 35 40 Q 50 25 65 40" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 30 45 Q 50 50 70 45" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <circle cx="42" cy="45" r="1.8" fill="#e2dfd5" />
+          <circle cx="58" cy="45" r="1.8" fill="#e2dfd5" />
+          <path d="M 50 49 Q 52 54 48 56" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 44 60 Q 50 63 56 59" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M 25 75 C 25 75 35 60 50 64 C 65 68 70 75 70 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 68 72 C 85 70 95 80 92 95 C 89 106 72 108 60 100 C 50 93 55 80 68 72 Z" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+          <path d="M 62 72 C 60 68 55 68 57 73 C 58 75 62 76 62 76" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 73 84 Q 78 82 76 86 T 74 91 Q 79 93 75 95" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          <path d="M 75 80 L 74 97" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M 45 68 Q 58 74 60 74" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <div className="doodle d-money-3">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(15, 30) rotate(-15)">
+            <rect x="0" y="0" width="45" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <circle cx="22" cy="12" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 6 4 L 10 4 M 39 4 L 35 4 M 6 20 L 10 20 M 39 20 L 35 20" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          </g>
+          <circle cx="28" cy="72" r="7" stroke="currentColor" stroke-width="2.2" fill="none"/>
+        </svg>
+      </div>
+      <div className="doodle d-tiara">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 75 Q 50 55 85 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 18 78 Q 50 59 82 78" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.5"/>
+          <path d="M 50 45 C 47 38 41 38 41 45 C 41 52 50 60 50 60 C 50 60 59 52 59 45 C 59 38 53 38 50 45 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M 25 70 Q 35 48 45 60" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 75 70 Q 65 48 55 60" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 18 73 Q 28 58 35 68" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M 82 73 Q 72 58 65 68" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <circle cx="50" cy="38" r="2.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="37" cy="50" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="63" cy="50" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 50 30 L 50 24 M 47 27 L 53 27" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      {/* Column 9 (Far Right Margin) */}
+      <div className="doodle d-arrow-2">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 6 34 Q 25 31 29 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M 21 13 L 29 11 L 31 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-shh">
+        <svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+          <text x="5" y="28" font-family="'Caveat', cursive" font-size="28" font-weight="700" fill="currentColor" letter-spacing="2">Shh...</text>
+          <path d="M 5 35 Q 35 32 75 36" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-dagger">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(40, 40) rotate(45) translate(-40, -40)">
+            <path d="M 37 15 L 43 15 L 43 55 L 40 62 L 37 55 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+            <path d="M 40 15 L 40 55" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+            <path d="M 28 55 H 52" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="28" cy="55" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="52" cy="55" r="1.5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M 38 55 L 38 70 L 42 70 L 42 55" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="40" cy="72" r="2.5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          </g>
+        </svg>
+      </div>
+      <div className="doodle d-crown-3">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 20 70 Q 50 68 80 70" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 22 73 Q 50 71 78 73" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 22 70 L 26 40 L 40 55 L 50 32 L 60 55 L 74 40 L 78 70" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 21 69 L 27 42 L 39 53 L 50 35 L 61 53 L 73 42 L 77 69" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+          <circle cx="50" cy="32" r="3.2" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="26" cy="40" r="2.8" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="74" cy="40" r="2.8" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M 28 70 L 32 60 M 38 70 L 42 60 M 48 70 L 52 60 M 58 70 L 62 60 M 68 70 L 72 60" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+        </svg>
+      </div>
+      <div className="doodle d-shield-3">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 20 L 40 15 L 65 20 C 65 45 55 65 40 73 C 25 65 15 45 15 20 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M 18 22 L 40 17.5 L 62 22 C 62 43 53 61 40 68.5 C 27 61 18 43 18 22 Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round" opacity="0.6"/>
+          <path d="M 40 20 L 40 65 M 23 35 H 57" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div className="doodle d-tiara-3">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 15 75 Q 50 55 85 75" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M 18 78 Q 50 59 82 78" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.5"/>
+          <path d="M 50 45 C 47 38 41 38 41 45 C 41 52 50 60 50 60 C 50 60 59 52 59 45 C 59 38 53 38 50 45 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M 25 70 Q 35 48 45 60" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 75 70 Q 65 48 55 60" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 18 73 Q 28 58 35 68" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M 82 73 Q 72 58 65 68" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <circle cx="50" cy="38" r="2.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="37" cy="50" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="63" cy="50" r="1.8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M 50 30 L 50 24 M 47 27 L 53 27" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
