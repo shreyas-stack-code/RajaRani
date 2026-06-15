@@ -143,12 +143,12 @@ export default function App() {
 
   // Local shuffling animation tracking
   const [localShuffling, setLocalShuffling] = useState(false);
-  const [lastShuffledRound, setLastShuffledRound] = useState(0);
 
   // Refs for tracking changes
   const prevPhaseRef = useRef('');
   const prevRoomDataRef = useRef(null);
   const chatEndRef = useRef(null);
+  const lastShuffledRoundRef = useRef(0);
 
   // Restore session
   useEffect(() => {
@@ -209,19 +209,22 @@ export default function App() {
   }, [roomCode, myId]);
 
   // Local shuffling visual transition
+  const phase = roomData?.phase;
+  const round = roomData?.round;
+
   useEffect(() => {
-    if (roomData && roomData.phase === 'shuffling') {
-      const round = roomData.round || 1;
-      if (lastShuffledRound !== round) {
+    if (phase === 'shuffling') {
+      const r = round || 1;
+      if (lastShuffledRoundRef.current !== r) {
         setLocalShuffling(true);
-        setLastShuffledRound(round);
+        lastShuffledRoundRef.current = r;
         const timer = setTimeout(() => {
           setLocalShuffling(false);
         }, 2800);
         return () => clearTimeout(timer);
       }
     }
-  }, [roomData, lastShuffledRound]);
+  }, [phase, round]);
 
   // Confetti triggers and chat updates
   useEffect(() => {
@@ -476,7 +479,7 @@ export default function App() {
 
     try {
       const data = await fbGet('rooms/' + roomCode);
-      if (!data || data.phase !== 'picking') return;
+      if (!data || (data.phase !== 'picking' && data.phase !== 'shuffling')) return;
       
       const chits = data.chits || [];
       const roles = data.roles || {};
@@ -913,7 +916,7 @@ export default function App() {
               )}
 
               {/* Picking Area (Scattered Chits) */}
-              {roomData.phase === 'picking' && !localShuffling && (
+              {(roomData.phase === 'picking' || roomData.phase === 'shuffling') && !localShuffling && (
                 <div id="picking-area-container" style={{
                   position: 'absolute',
                   inset: 0,
