@@ -1,184 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Raja Rani — The Royal Court</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raja Rani — The Royal Court</title>
 
-<!--
-  ╔══════════════════════════════════════════════════════╗
-  ║         RAJA RANI — FIREBASE SETUP (2 min)          ║
-  ╠══════════════════════════════════════════════════════╣
-  ║  1. Go to https://console.firebase.google.com       ║
-  ║  2. Create a new project (any name)                 ║
-  ║  3. Go to Build → Realtime Database → Create DB     ║
-  ║  4. Choose "Start in TEST mode" → Enable            ║
-  ║  5. Copy your DB URL (looks like:                   ║
-  ║     https://YOUR-PROJECT-default-rtdb.firebaseio.com║
-  ║  6. Paste it below where it says PASTE_YOUR_URL     ║
-  ╚══════════════════════════════════════════════════════╝
--->
-
-
-<link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Caveat:wght@400;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
-
-<div class="notif" id="notif"></div>
-
-<!-- LOBBY -->
-<div class="screen active" id="lobby">
-  <span class="crown">♚</span>
-  <div class="title">Raja Rani</div>
-  <div class="subtitle">The Royal Court  Multiplayer</div>
-  <div id="setup-warn" class="setup-warning" style="display:none">
-    <p>⚠️ Firebase URL not configured!<br>Open this file in a text editor and replace:<br>
-    <code>PASTE_YOUR_FIREBASE_URL_HERE</code>
-    with your Firebase Realtime Database URL.</p>
-  </div>
-  <div class="card">
-    <h3>Enter the Court</h3>
-    <input class="gi" id="inp-name" placeholder="Your name..." maxlength="16"/>
-  </div>
-  <div class="card">
-    <h3>Create a Room</h3>
-    <button class="btn" onclick="createRoom()" style="width:100%">Create New Room</button>
-  </div>
-  <div class="card">
-    <h3>Join a Room</h3>
-    <div class="row">
-      <input class="gi" id="inp-code" placeholder="Room code e.g. AB12CD" maxlength="6" style="text-transform:uppercase"/>
-      <button class="btn btn-o" onclick="joinRoom()">Join</button>
-    </div>
-    <div class="err" id="lerr"></div>
-  </div>
-</div>
-
-<!-- WAITING -->
-<div class="screen" id="waiting">
-  <button class="btn btn-o btn-red waiting-leave" onclick="leaveRoom()">Leave</button>
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:2rem">
-    <span class="crown" style="font-size:2rem">♚</span>
-    <div style="font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:#7a6040;margin-bottom:.3rem">Room Code</div>
-    <div class="rc-big" id="wcode">——</div>
-    <div class="copying" id="copy-btn" onclick="copyCode()">📋 Tap to copy &amp; share with friends</div>
-    <div style="margin-top:1.5rem;width:100%;max-width:360px">
-      <div style="font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:#7a6040;margin-bottom:.6rem">
-        Players <span id="wcount">0</span>/5 &nbsp;·&nbsp; <span id="wroles" style="color:#c4922a"></span>
-      </div>
-      <div class="slots" id="wslots"></div>
-      <div class="smsg" id="wstatus">Waiting for players...</div>
-      <div style="margin-top:1.2rem;display:flex;gap:10px;justify-content:center">
-  <button class="btn" id="sbtn" onclick="startGame()" disabled>
-    Start Game
-  </button>
-
-  <button class="btn btn-o" onclick="showHowToPlay()">
-    How To Play
-  </button>
-</div>
-    </div>
-  </div>
-</div>
-
-<!-- GAME -->
-<div class="screen" id="game">
-  <div class="gl">
-    <div class="rcard">
-      <div class="rbig" id="g-emoji">♚</div>
-      <div style="flex:1">
-        <div class="rlabel">Your Secret Role</div>
-        <div class="rname" id="g-role">Raja</div>
-        <div class="rdesc" id="g-desc">...</div>
-      </div>
-    </div>
-    <div class="sbanner">
-      <div class="slabel" id="sl">Seeking</div>
-      <div class="saction" id="sa">...</div>
-    </div>
-    <div class="pa">
-      <h4>Players</h4>
-      <div class="pgrid" id="pgrid"></div>
-    </div>
-  </div>
-  <div class="gr">
-    <div class="chat-panel">
-      <div class="ch">
-        <span>Royal Messenger ✦</span>
-        <button class="leave-btn" onclick="leaveRoom()">Leave Game</button>
-      </div>
-      <div class="cm" id="cm"></div>
-      <div class="cir">
-        <input class="ci" id="ci" placeholder="Message..." maxlength="100" onkeydown="if(event.key==='Enter')sendChat()"/>
-        <button class="cs" onclick="sendChat()">↑</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- REVEAL -->
-<div class="screen" id="reveal">
-  <div class="rtitle">Round Over!</div>
-  <div class="rsub" id="rresult">The court is revealed</div>
-  <div class="rcards" id="rcards"></div>
-  <div style="font-size:.65rem;color:#7a6040;text-transform:uppercase;letter-spacing:2px;margin-bottom:.65rem">Leaderboard</div>
-  <div class="sb" id="lboard"></div>
-  <div style="display:flex;gap:10px">
-    <button class="btn" onclick="nextRound()" id="nrbtn">Next Round</button>
-    <button class="btn btn-o btn-red" onclick="leaveRoom()">Leave</button>
-  </div>
-  <div class="smsg" id="rwaitmsg" style="margin-top:.75rem"></div>
-</div>
-
-<div id="howToPlayModal" style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.8);
-z-index:1000;
-align-items:center;
-justify-content:center;
-">
-
-  <div style="
-  background:#120820;
-  border:1px solid rgba(240,192,96,.3);
-  border-radius:12px;
-  max-width:500px;
-  width:90%;
-  padding:20px;
-  color:#e8d5b7;
-  ">
-
-    <h2 style="color:#f0c060;margin-bottom:15px">
-      How To Play
-    </h2>
-    
-    <br>
-
-    <p style="margin-bottom:10px">
-      Unlike the usual game, the rules are a bit different. The game starts as the raja finds the rani and progresses as each person finds the next role and the game ends when the police finds the thief.
-    </p>
-    <br>
-
-    <p style="margin-bottom:10px">
-      If you correctly identify the next person, you will earn the points of your role
-      (raja-1000,rani-800,mantri-600,police-100)
-      The one you found starts seeking the next person
-    </p>
-<br>
-    <p style="margin-bottom:10px">
-      If you fail to correctly identify the next role, you will swap your role with the person you chose and they will continue playing with your role.
-    </p>
-
-    <button class="btn" onclick="closeHowToPlay()">
-      Close
-    </button>
-
-  </div>
-</div>
-
-
-<script src="script.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
+
 </html>

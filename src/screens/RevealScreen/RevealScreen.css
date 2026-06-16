@@ -1,0 +1,169 @@
+#reveal {
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.rtitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0px var(--accent-peach);
+  margin-bottom: 0.3rem;
+}
+
+.rsub {
+  color: var(--text-light);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.rcards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 2rem;
+  max-width: 100%;
+}
+
+/* Reveal Roles as mini unfolded chits */
+.rcard2 {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 1.1rem 0.8rem;
+  text-align: center;
+  min-width: 105px;
+  flex: 1;
+  max-width: 130px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+  background-image: 
+    linear-gradient(#f1f6ff 1px, transparent 1px);
+  background-size: 100% 20px;
+  transform: rotate(var(--rot, -1deg));
+  transition: transform 0.2s;
+}
+
+.rcard2:nth-child(2n) {
+  --rot: 2deg;
+}
+.rcard2:nth-child(3n) {
+  --rot: -2deg;
+}
+.rcard2:nth-child(4n) {
+  --rot: 1.5deg;
+}
+
+.rcard2:hover {
+  transform: rotate(0deg) scale(1.05);
+}
+
+.re {
+  font-size: 2.4rem;
+  margin-bottom: 4px;
+}
+
+.rr {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ff7675;
+  margin-bottom: 4px;
+}
+
+.rn {
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.rp {
+  font-size: 1.25rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.rpl {
+  font-size: 0.65rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* SCOREBOARD / LEADERBOARD */
+.sb {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.sb-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  border-left: 6px solid var(--red-margin);
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.02);
+}
+
+.sb-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.sb-table th, .sb-table td {
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.sb-table th {
+  background: #fbfbf9;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.sb-table th:first-child, .sb-table td:first-child {
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-light);
+  border-right: 1px dashed var(--border-color);
+  position: sticky;
+  left: 0;
+  background: inherit;
+  z-index: 2;
+}
+
+.sb-table td:first-child {
+  background: #fdfdfb;
+}
+
+.sb-table th:first-child {
+  background: #fbfbf9;
+}
+
+.sb-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sb-table-total {
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(108, 157, 246, 0.05) !important;
+}
+
+.sb-table-total td {
+  border-top: 2px solid var(--border-color);
+  font-weight: 700;
+}
